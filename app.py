@@ -57,11 +57,8 @@ def sign_in():
 @app.route('/sign_in', methods=['POST'])
 def sign_in_user():
     email_receive = request.form['email_give']
-    print(email_receive)
     password_receive = request.form['password_give']
-    print(password_receive)
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    print(password_hash)
     result = db.users.find_one({'email': email_receive, 'password': password_hash})
 
     print(result)
@@ -69,6 +66,7 @@ def sign_in_user():
     if result is not None :
         payload = {
             'ID': email_receive,
+            'NAME': result['username'],
             'EXP': str(datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24))
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
