@@ -28,11 +28,12 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
     <script>
-        function signIn() {
+        function signIn(event) {
             let email = $("#input_email").val();
             let password = $("#input_password").val();
     
-            if (email == "") {
+            // if(event.keyCode === 13) {
+                if (email == "") {
                 alert("E-mail을 입력해주세요.")
                 $("#input_email").focus()
                 return;
@@ -55,13 +56,14 @@
                     if (response["result"] == "success") {
                         alert('"더이상의 흑우는 없다." 블랙카우에 방문해주셔서 감사합니다.')
                         $.cookie('mytoken', response['token'], {path: '/'});
-                        window.location.replace('/')
+                        window.location.replace('/');
                     } else {
                         alert(response['message'])
                     }
                 }
             })
-        }
+            }
+        // }
         
     </script>
 
@@ -69,11 +71,15 @@
 </head>
 
 <body>
-    <div>
-        <input id="input_email" class="input is-large" type="email" placeholder="E-mail을 입력해주세요.">
-        <input id="input_password" class="input is-large" type="password" placeholder="Password를 입력해주세요.">
-        <button class="button is-dark" onclick="signIn()">Sign In</button>
-    </div>
+    {% include './components/header/index.html' %}
+        <div class="wrap">
+            <main>
+                <input id="input_email" class="input is-large" type="email" placeholder="E-mail을 입력해주세요.">
+                <input id="input_password" class="input is-large" type="password" placeholder="Password를 입력해주세요.">
+                <button class="button is-dark" onclick="signIn(event)">Sign In</button>
+            </main>
+        </div>
+    {% include './components/footer/index.j2' %}
 
 </body>
 
