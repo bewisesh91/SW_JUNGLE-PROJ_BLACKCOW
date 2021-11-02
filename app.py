@@ -21,14 +21,14 @@ def add_favorite():
         'price': price,
         'user_id': user_id
     }
-    count = db.favorite.count_documents({
+    count = db.favorites.count_documents({
         'pid': pid, 
         'user_id': user_id
     })
     response = {'result':'fail'}
     
     if not count:    
-        result = db.favorite.insert_one(document)
+        result = db.favorites.insert_one(document)
         if result.acknowledged:
             response = {'result':'success'}
     return jsonify(response)
@@ -39,7 +39,7 @@ def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
     user_id = request.form['user_id']
 
-    result = db.favorite.delete_one({
+    result = db.favorites.delete_one({
             'pid': pid, 
             'user_id': user_id
         })
