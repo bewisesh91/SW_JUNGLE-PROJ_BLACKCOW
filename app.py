@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-from pymongo import MongoClient
+from pymongo import MongoClient, message
 import jwt, hashlib, datetime
 
 
@@ -13,7 +13,18 @@ db = client.dbjungle_black_cow
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive is not None :
+        token_receive = bytes(token_receive[2:-1].encode('ascii'))
+
+        try:
+            payload= jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.users.find_one({'email': payload['ID']})
+            return render_template('index.html', user_info=user_info)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('/sign_in', message = "로그인 시간이 만료되었습니다."))
+    else :
+        return render_template('index.html')
 
 
 ### 회원 가입 기능 구현 ###
@@ -57,11 +68,8 @@ def sign_in():
 @app.route('/sign_in', methods=['POST'])
 def sign_in_user():
     email_receive = request.form['email_give']
-    print(email_receive)
     password_receive = request.form['password_give']
-    print(password_receive)
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    print(password_hash)
     result = db.users.find_one({'email': email_receive, 'password': password_hash})
 
     print(result)
