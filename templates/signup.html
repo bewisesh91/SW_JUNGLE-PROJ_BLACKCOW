@@ -71,7 +71,7 @@
                 success: function (response) {
                     if (response["result"] == "success") {
                         alert("회원 가입이 완료되었습니다.");
-                        window.location.replace("#")
+                        window.location.href = '/sign_in';
                     } 
                 }
             })
@@ -139,7 +139,7 @@
                     <input id="input_password2" class="input columns is-medium is-gapless" type="password" placeholder="Password를 다시 입력해주세요.">
                     <input id="input_email" class="input columns is-medium is-gapless" type="email" placeholder="E-mail을 입력해주세요.">
                 </div>
-                <div class="columns is-gapless">
+                <div>
                     <button id="checkup_email" class="button is-light" onclick="checkUp()">Check Up</button>
                     <button class="button is-dark" onclick="signUp()">Sign Up</button>
                 </div>
