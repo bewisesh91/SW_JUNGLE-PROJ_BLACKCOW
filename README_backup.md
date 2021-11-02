@@ -4,7 +4,7 @@
 - method: POST
 - data: 
     - user_query: 유저 검색어 정보 
-    - user_token: 유저 토큰
+    - user_id: 유저 아이디
 - response:
 ```Javascript
 response = {

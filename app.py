@@ -1,8 +1,9 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+import threading
+from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
+from utils import _generate_product_response
 from pymongo import MongoClient
+from flask import Flask, render_template, jsonify, request
 import jwt, hashlib, datetime
-
-
 
 app = Flask(__name__)
 SECRET_KEY = 'black_cow'
@@ -54,15 +55,14 @@ def check_up():
 def sign_in():
     return render_template('signin.html', title = '로그인')
 
+
 @app.route('/sign_in', methods=['POST'])
 def sign_in_user():
     email_receive = request.form['email_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     result = db.users.find_one({'email': email_receive, 'password': password_hash})
-
-    print(result)
-
+    
     if result is not None :
         payload = {
             'ID': email_receive,
@@ -80,5 +80,37 @@ def my_page():
     return render_template('mypage.html', title = '마이페이지')
 
 
+# 상품 정보 가져오기 기능 구현 
+@app.route('/products', methods=['POST'])
+def get_products():
+    query = request.form['user_query']
+    user_token = request.form['user_token']
+    
+    user_token = bytes(user_token[2:-1].encode('ascii'))
+    payload= jwt.decode(user_token, SECRET_KEY, algorithms=['HS256'])
+    user_id = payload['ID']
+    
+    user_favorites = db.favorites.find({"user_id": user_id})
+    user_favorites_pid = set()
+    for user_favorite in user_favorites:
+        user_favorites_pid.add(user_favorite['pid'])
+
+    threads = []
+    result_dict = {}
+    search_functions = [gather_bunjang, gather_joongna, gather_hellomarket]
+    args = (query, result_dict)
+    for fn in search_functions:
+        th = threading.Thread(target = fn, args = args)
+        threads.append(th)
+    
+    for th in threads:
+        th.start()
+    for th in threads:
+        th.join()
+
+    response = _generate_product_response(result_dict, user_favorites_pid)
+    return jsonify(response)
+
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
+
