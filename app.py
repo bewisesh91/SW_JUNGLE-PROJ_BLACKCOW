@@ -38,7 +38,7 @@ def add_favorite():
 def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
     user_id = request.form['user_id']
-    print(pid, user_id)
+
     result = db.favorite.delete_one({
             'pid': pid, 
             'user_id': user_id
