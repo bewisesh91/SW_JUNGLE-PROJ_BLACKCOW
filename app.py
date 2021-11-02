@@ -1,11 +1,11 @@
-
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from pymongo import MongoClient
 import jwt, hashlib, datetime
 
 
+
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'black_cow'
+SECRET_KEY = 'black_cow'
 
 client = MongoClient('localhost', 27017)
 db = client.dbjungle_black_cow
@@ -23,7 +23,7 @@ def sing_up():
 
 
 @app.route('/sign_up', methods=['POST'])
-def sign_up():
+def sign_up_save():
     # 회원 가입 시 받을 정보 3가지 
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
@@ -51,11 +51,26 @@ def check_up():
 
 ### 로그인 기능 구현 ###
 @app.route('/sign_in', methods=['GET'])
-def sing_in():
+def sign_in():
     return render_template('signin.html')
 
+@app.route('/sign_in', methods=['POST'])
+def sign_in_user():
+    email_receive = request.form['email_give']
+    password_receive = request.form['password_give']
+    password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    result = db.users.find_one({'email': email_receive, 'password': password_hash})
 
-
+    if result is not None :
+        payload = {
+            'ID': email_receive,
+            'EXP': str(datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24))
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        
+        return jsonify({'result': 'success', 'token': str(token)})
+    else :
+        return jsonify({'result': 'fail', 'message': 'E-mail/Password가 정확하지 않습니다.'})
 
 
 if __name__ == '__main__':  
