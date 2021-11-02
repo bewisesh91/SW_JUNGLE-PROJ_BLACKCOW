@@ -148,6 +148,9 @@ def remove_favorite():
         return {'result': 'success'}
     return {'result': 'fail'}
 
+@app.route('/mypage', method=['POST'])
+def get_my_page():
+    pass
 
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
