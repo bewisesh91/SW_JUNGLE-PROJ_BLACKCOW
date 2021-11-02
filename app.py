@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
 
-    return render_template('index.j2', hello = '안녕')
+    return render_template('index.html', hello = '안녕')
 
 
 @app.route('/signin')
@@ -22,6 +22,16 @@ def signin():
 def signup():
 
     return render_template('pages/signup/index.j2', pageName = '회원가입')
+
+@app.route('/mypage')
+def mypage():
+    # 로그인 안되어있을 경우, 접근 제한 기능,
+    return render_template('pages/mypage/index.j2', pageName = '마이페이지')
+
+# @app.route('/mypage')
+# def mypage():
+    
+#     return render_template('pages/mypage/index.j2', pageName = '마이페이지')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <script>
+        const { pathname } = window.location;
+        const current_pathname = pathname;
+
+        window.onload = function () {
+            const signinEle = document.getElementById("signin");
+            const signupEle = document.getElementById("signup");
+            if(current_pathname === '/signin') {
+                signinEle.style.color = "#42BBFF"
+                signupEle.style.color = "black"
+            } else if (current_pathname === '/signup') {
+                signupEle.style.color = "#42BBFF"
+                signinEle.style.color = "black"
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header_wrap">
+            <div class="header_logo_container">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="black cow logo" />
+                </a>
+                <p class="input_container">
+                    <input
+                        type="text"
+                        placeholder="검색어를 입력해주세요."
+                    />
+                </p>
+            </div>
+            <div class="header_anchor_container">
+                <a id="signin" class="sign_btn signin_btn" href="/signin">
+                    로그인
+                </a>
+                <a id="signup" class="sign_btn signup_btn" href="/signup">
+                    회원가입
+                </a>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
