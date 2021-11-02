@@ -2,28 +2,38 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-    <script>
+    <script type="text/javascript">        
         const { pathname } = window.location;
         const current_pathname = pathname;
 
-        window.onload = function () {
+        function removeToken() {
+            $.removeCookie('mytoken', {path: '/'});
+            window.location.href = '/sign_in';
+        }
+
+        $(document).ready(function() {
+
+            let token = $.cookie("mytoken");
+
             const signinEle = document.getElementById("signin");
             const signupEle = document.getElementById("signup");
-            if(current_pathname === '/signin') {
+
+            if(current_pathname === '/sign_in') {
                 signinEle.style.color = "#42BBFF"
                 signupEle.style.color = "black"
-            } else if (current_pathname === '/signup') {
+            } else if (current_pathname === '/sign_up') {
                 signupEle.style.color = "#42BBFF"
                 signinEle.style.color = "black"
             }
-        }
-
+        });
     </script>
 </head>
 <body>
@@ -36,12 +46,21 @@
                 
             </div>
             <div class="header_anchor_container">
-                <a id="signin" class="sign_btn signin_btn" href="/sign_in">
-                    로그인
-                </a>
-                <a id="signup" class="sign_btn signup_btn" href="/sign_up">
-                    회원가입
-                </a>
+                {% if token is defined %}
+                    <a id="signin" class="sign_btn signin_btn" href="/my_page">
+                        마이페이지
+                    </a>
+                    <a id="signup" class="sign_btn signup_btn" onclick="removeToken()">
+                        로그아웃
+                    </a>
+                {% else %}
+                    <a id="signin" class="sign_btn signin_btn" href="/sign_in">
+                        로그인
+                    </a>
+                    <a id="signup" class="sign_btn signup_btn" href="/sign_up">
+                        회원가입
+                    </a>
+                {% endif %}
             </div>
         </div>
     </header>

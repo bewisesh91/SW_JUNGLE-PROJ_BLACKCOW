@@ -52,7 +52,7 @@ def check_up():
 ### 로그인 기능 구현 ###
 @app.route('/sign_in', methods=['GET'])
 def sign_in():
-    return render_template('signin.html')
+    return render_template('signin.html', title = '로그인')
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in_user():
@@ -74,6 +74,10 @@ def sign_in_user():
         return jsonify({'result': 'success', 'token': str(token)})
     else :
         return jsonify({'result': 'fail', 'message': 'E-mail/Password가 정확하지 않습니다.'})
+
+@app.route('/my_page', methods=['GET'])
+def my_page():
+    return render_template('mypage.html', title = '마이페이지')
 
 
 if __name__ == '__main__':  

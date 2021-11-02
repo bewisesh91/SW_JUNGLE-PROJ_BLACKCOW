@@ -129,20 +129,20 @@
 <body>
     {% include './components/header/index.html' %}
         <div class="wrap">
-            <main>
-                <p>
-                    <span>{{title}}</span>
-                </p>
-                <div>
-                    <input id="input_username" class="input columns is-medium is-gapless" type="text" placeholder="Username을 입력해주세요(한글/영문/숫자/특수문자, 2-15자).">
-                    <input id="input_password1" class="input columns is-medium is-gapless" type="password" placeholder="Password를 입력해주세요(영문/숫자/특수문자, 8-20자).">
-                    <input id="input_password2" class="input columns is-medium is-gapless" type="password" placeholder="Password를 다시 입력해주세요.">
-                    <input id="input_email" class="input columns is-medium is-gapless" type="email" placeholder="E-mail을 입력해주세요.">
+            <main class="sign_wrap">
+                <div class="title-container">
+                    <h3>{{title}}</h3>
                 </div>
                 <div>
-                    <button id="checkup_email" class="button is-light" onclick="checkUp()">Check Up</button>
-                    <button class="button is-dark" onclick="signUp()">Sign Up</button>
+                    <input id="input_username" class="input columns is-medium is-gapless" type="text" placeholder="이름을 입력해주세요.">
+                    <input id="input_password1" class="input columns is-medium is-gapless" type="password" placeholder="비밀번호 (영문/숫자/특수문자, 8-20자)">
+                    <input id="input_password2" class="input columns is-medium is-gapless" type="password" placeholder="비밀번호 확인">
+                    <p class="email_container">
+                        <input id="input_email" class="input columns is-medium is-gapless" type="email" placeholder="이메일을 입력해주세요.">
+                        <button id="checkup_email" class="button columns is-medium is-gapless" style="margin-bottom: 1.5rem; margin-left: 1.5rem;" onclick="checkUp()">중복확인</button>
+                    </p>
                 </div>
+                <button class="button is-info is-medium is-fullwidth" onclick="signUp()">회원가입</button>
             </main>
         </div>
     {% include './components/footer/index.j2' %}
