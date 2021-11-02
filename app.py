@@ -19,7 +19,7 @@ def home():
 ### 회원 가입 기능 구현 ###
 @app.route('/sign_up', methods=['GET'])
 def sing_up():
-    return render_template('singup.html')
+    return render_template('signup.html', title = '회원가입')
 
 
 @app.route('/sign_up', methods=['POST'])

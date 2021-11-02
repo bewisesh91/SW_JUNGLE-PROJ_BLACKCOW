@@ -6,19 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-
-    <!-- Bulma -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <!-- Optional JavaScript -->
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -139,14 +127,25 @@
 </head>
 
 <body>
-    <div >
-        <input id="input_username" class="input is-large" type="text" placeholder="Username을 입력해주세요(한글/영문/숫자/특수문자, 2-15자).">
-        <input id="input_password1" class="input is-large" type="password" placeholder="Password를 입력해주세요(영문/숫자/특수문자, 8-20자).">
-        <input id="input_password2" class="input is-large" type="password" placeholder="Password를 다시 입력해주세요.">
-        <input id="input_email" class="input is-large" type="email" placeholder="E-mail을 입력해주세요.">
-        <button id="checkup_email" class="button is-light" onclick="checkUp()">Check Up</button>
-        <button class="button is-dark" onclick="signUp()">Sign Up</button>
-    </div>
+    {% include './components/header/index.html' %}
+        <div class="wrap">
+            <main>
+                <p>
+                    <span>{{title}}</span>
+                </p>
+                <div>
+                    <input id="input_username" class="input columns is-medium is-gapless" type="text" placeholder="Username을 입력해주세요(한글/영문/숫자/특수문자, 2-15자).">
+                    <input id="input_password1" class="input columns is-medium is-gapless" type="password" placeholder="Password를 입력해주세요(영문/숫자/특수문자, 8-20자).">
+                    <input id="input_password2" class="input columns is-medium is-gapless" type="password" placeholder="Password를 다시 입력해주세요.">
+                    <input id="input_email" class="input columns is-medium is-gapless" type="email" placeholder="E-mail을 입력해주세요.">
+                </div>
+                <div class="columns is-gapless">
+                    <button id="checkup_email" class="button is-light" onclick="checkUp()">Check Up</button>
+                    <button class="button is-dark" onclick="signUp()">Sign Up</button>
+                </div>
+            </main>
+        </div>
+    {% include './components/footer/index.j2' %}
 </body>
 
 </html>

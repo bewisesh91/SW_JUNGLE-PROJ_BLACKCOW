@@ -29,15 +29,18 @@ header {
 .wrap {
     width: 800px;
     margin: 20px auto;
-    background-color: #FFFFFF;
-    border: 1px solid rgba(0,0,0, 0.1);
     border-radius: 10px;
 }
 
 main {
     width: 100%;
-    min-height: 400px;
+    min-height: 70vh;
     padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0,0,0, 0.1);
 }
 
 .header_logo_container {
@@ -53,21 +56,34 @@ main {
 }
 
 .input_container {
-    height: 40px;
+    background-color: #ffffff;
+    height: 50px;
     border: 1px solid rgba(0,0,0, 0.1);
-    padding: 10px;
+    padding: 10px 10px 10px 20px;
     box-sizing: border-box;
     border-radius: 6px;
+    display: flex;
+    align-items: center;;
 }
 
 .input_container > input {
-    width: 200px;
+    width: 100%;
     outline: none;
     height: 40px;
     border: none;
     height: 100%;
+    font-size: 16px;
     text-indent: 10px;
 
+}
+
+.icon_container { 
+    width: 20px;
+    height: 20px;
+}
+
+.icon_container > img { 
+    width: 100%;
 }
 
 .header_logo_container > a > img {
@@ -89,4 +105,25 @@ main {
 
 .inactive_btn_color {
     color: black;
+}
+
+#list-container {
+    height: 100%;
+}
+
+#list-container > div { 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-search-result-image { 
+    width: 200px;
+    /* height: 100px; */
+}
+
+.no-search-result-image img { 
+    width: 100%;
 }
