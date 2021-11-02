@@ -123,6 +123,13 @@ def get_products():
     response = _generate_product_response(result_dict, user_favorites_pid)
     return jsonify({'result': 'success', 'data': response})
 
+
+@app.route('/platform', methods=['GET'])
+def platform():
+    data = request.form['data']
+
+    return render_template('mypage.html', title = 'Favorite', data = data)
+
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
 
