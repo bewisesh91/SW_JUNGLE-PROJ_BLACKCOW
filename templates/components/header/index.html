@@ -14,11 +14,6 @@
         const { pathname } = window.location;
         const current_pathname = pathname;
 
-        function removeToken() {
-            $.removeCookie('mytoken', {path: '/'});
-            window.location.href = '/sign_in';
-        }
-
         $(document).ready(function() {
 
             let token = $.cookie("mytoken");
@@ -45,22 +40,6 @@
                 </a>
                 
             </div>
-            <div class="header_anchor_container">
-                {% if token is defined %}
-                    <a id="signin" class="sign_btn signin_btn" href="/my_page">
-                        마이페이지
-                    </a>
-                    <a id="signup" class="sign_btn signup_btn" onclick="removeToken()">
-                        로그아웃
-                    </a>
-                {% else %}
-                    <a id="signin" class="sign_btn signin_btn" href="/sign_in">
-                        로그인
-                    </a>
-                    <a id="signup" class="sign_btn signup_btn" href="/sign_up">
-                        회원가입
-                    </a>
-                {% endif %}
             </div>
         </div>
     </header>
