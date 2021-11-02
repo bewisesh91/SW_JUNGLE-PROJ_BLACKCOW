@@ -1,6 +1,6 @@
 import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
-from utils import _generate_product_response
+from utils import generate_product_response, token_to_id
 from pymongo import MongoClient
 from flask import Flask, render_template, jsonify, request
 import jwt, hashlib, datetime
@@ -79,11 +79,7 @@ def sign_in_user():
 @app.route('/products', methods=['POST'])
 def get_products():
     query = request.form['user_query']
-    user_token = request.form['user_token']
-    
-    user_token = bytes(user_token[2:-1].encode('ascii'))
-    payload= jwt.decode(user_token, SECRET_KEY, algorithms=['HS256'])
-    user_id = payload['ID']
+    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
     
     user_favorites = db.favorites.find({"user_id": user_id})
     user_favorites_pid = set()
@@ -103,7 +99,7 @@ def get_products():
     for th in threads:
         th.join()
 
-    response = _generate_product_response(result_dict, user_favorites_pid)
+    response = generate_product_response(result_dict, user_favorites_pid)
     return jsonify(response)
 
 
@@ -113,7 +109,7 @@ def add_favorite():
     image_url = request.form['image_url']
     price = request.form['price']
     pid = request.form['detail_url'].split('/')[-1]
-    user_id = request.form['user_id']
+    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
     
     document = {
         'title': title,
@@ -138,7 +134,7 @@ def add_favorite():
 @app.route('/favorite', methods=['DELETE'])
 def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
-    user_id = request.form['user_id']
+    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
 
     result = db.favorites.delete_one({
             'pid': pid, 

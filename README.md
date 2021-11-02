@@ -80,7 +80,7 @@ response = {
     - image_url: 상품 이미지 url 
     - price: 상품 가격 
     - detail_url: 상품 상세페이지 url 
-    - user_id: User ID
+    - user_token: 유저 토큰
 - response:
     - result: success 또는 fail
 
@@ -90,7 +90,7 @@ response = {
 - method: DELETE
 - data: 
     - detail_url: 상품 상세페이지 url 
-    - user_id: User ID 
+    - user_token: 유저 토큰
 - response: 
     - result: success 또는 fail
 
