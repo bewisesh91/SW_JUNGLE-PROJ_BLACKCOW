@@ -7,9 +7,14 @@ UPPER_CONSTANT = 1.5
 
 def _filter_items(items, lower, upper, result_str, result_dict):
     items = sorted(items)
+    if len(items) == 0:
+        median = 0
+        result_dict[result_str] = ([], 0)
+        return 
+    
     mid = len(items) // 2
     median = items[mid][0]
-
+    
     filtered_item = []
     sum = 0
     for item in items:

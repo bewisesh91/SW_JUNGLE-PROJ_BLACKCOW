@@ -82,7 +82,10 @@ def _generate_product_response(result_dict):
 
     response['total_average'] = total_average / total_count
     for company in result_dict:
-        response['averages'][company]['percentage'] = (response['averages'][company]['average'] - response['total_average']) / response['total_average'] * 100 
+        if response['items'][company]['counts'] != 0:
+            response['averages'][company]['percentage'] = (response['averages'][company]['average'] - response['total_average']) / response['total_average'] * 100 
+        else:
+            response['averages'][company]['percentage'] = 0
     return response
 
 @app.route('/products', methods=['POST'])
