@@ -14,7 +14,18 @@ db = client.dbjungle_black_cow
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive is not None :
+        token_receive = bytes(token_receive[2:-1].encode('ascii'))
+
+        try:
+            payload= jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.users.find_one({'email': payload['ID']})
+            return render_template('index.html', user_info=user_info)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('/sign_in', message = "로그인 시간이 만료되었습니다."))
+    else :
+        return render_template('index.html')
 
 
 ### 회원 가입 기능 구현 ###
@@ -77,7 +88,7 @@ def sign_in_user():
 
 @app.route('/my_page', methods=['GET'])
 def my_page():
-    return render_template('mypage.html', title = '마이페이지')
+    return render_template('mypage.html', title = 'Favorite')
 
 
 # 상품 정보 가져오기 기능 구현 
@@ -88,6 +99,7 @@ def get_products():
     
     user_token = bytes(user_token[2:-1].encode('ascii'))
     payload= jwt.decode(user_token, SECRET_KEY, algorithms=['HS256'])
+
     user_id = payload['ID']
     
     user_favorites = db.favorites.find({"user_id": user_id})
@@ -109,7 +121,7 @@ def get_products():
         th.join()
 
     response = _generate_product_response(result_dict, user_favorites_pid)
-    return jsonify(response)
+    return jsonify({'result': 'success', 'data': response})
 
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)

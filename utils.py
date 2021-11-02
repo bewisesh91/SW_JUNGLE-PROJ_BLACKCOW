@@ -1,5 +1,4 @@
 def _generate_product_response(result_dict, user_favorites_pid):
-    print(user_favorites_pid)
     detail_base_url = {
         'bunjang': 'https://m.bunjang.co.kr/products/{{PID}}',
         'joongna': 'https://m.joongna.com/product-detail/{{PID}}',
@@ -31,7 +30,7 @@ def _generate_product_response(result_dict, user_favorites_pid):
                     'imageUrl': '',
                     'productPageUrl': '',
                     'percentage': 0
-                }]
+                }],
             },
             'joongna':{
                 'counts': 0,

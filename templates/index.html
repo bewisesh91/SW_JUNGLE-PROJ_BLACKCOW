@@ -24,6 +24,7 @@
         
         function searchEnter(event) {
             let keyword = $("#search_input").val();
+            let data = $.cookie('mytoken')
 
             if(event.keyCode === 13) {
                 if(keyword === "") {
@@ -32,7 +33,20 @@
                 }
                 $('#loader').show();
 
-                alert(keyword)
+                $.ajax({
+                    type: "POST",
+                    url: "/products",
+                    data: { 
+                            user_query: keyword,
+                            user_token: data,
+                        },
+                    success: function (response) {
+                        console.log(response)
+                        if (response["result"] == "success") {
+
+                        }
+                    }
+                })
 
                 $('#loader').hide();
 
