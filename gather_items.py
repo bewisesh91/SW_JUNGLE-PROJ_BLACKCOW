@@ -1,13 +1,11 @@
 import requests
-# from flask import Flask, render_template, jsonify, request
-# from pymongo import MongoClient
-# client = MongoClient('localhost', 27017)
+import json 
+
 MAX_ITEM = 300
-MAX_IDX = MAX_ITEM // 60 
-LOWER_CONSTANT = 0.3
-UPPER_CONSTANT = 2
-result_dict = {}
-def _filter_items(items, lower, upper, result_str):
+LOWER_CONSTANT = 0.5
+UPPER_CONSTANT = 1.5
+
+def _filter_items(items, lower, upper, result_str, result_dict):
     items = sorted(items)
     mid = len(items) // 2
     median = items[mid][0]
@@ -22,62 +20,91 @@ def _filter_items(items, lower, upper, result_str):
             sum += item[0]
     result_dict[result_str] = (filtered_item, sum / len(filtered_item))
 
-def gather_bunjang(query):
+
+def gather_bunjang(query, result_dict):
     items = []
-    for i in range(MAX_IDX):
+    max_idx = MAX_ITEM // 30
+    for i in range(max_idx):
         bunjang_url = f'https://api.bunjang.co.kr/api/1/find_v2.json?q={query}&order=date&page={i}&stat_device=w&stat_category_required=1&req_ref=search&version=4'
-        res = requests.get(bunjang_url)
+        res = requests.get(bunjang_url.encode('utf-8'))
         raw_items = res.json()['list']
         for item in raw_items:
-            items.append(
-                (
-                    int(item['price']), 
-                    item['name'],
-                    item['product_image'],
-                    item['pid'] # 상세 페이지 
+            price = int(item['price'])
+            if price != 0:
+                items.append(    
+                    (
+                        int(item['price']), 
+                        item['name'],
+                        item['product_image'],
+                        item['pid'] # 상세 페이지 
+                    )
                 )
-            )
-    _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, 'bunjang')
-    # return _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, result_str)
-
+    _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, 'bunjang', result_dict)
+    
         
-def gather_joongna(query):
-    headers = {'Content-Type': 'application/json; charset=utf-8'}
-    data = '{"searchWord": "%s","sort": "RECENT_SORT", "searchQuantity":%d}'%(query, MAX_ITEM)
-    res = requests.post(url = 'https://search-api.joongna.com/v25/search/product', headers = headers,  data = data.encode("utf-8"))
+def gather_joongna(query, result_dict):
+    headers = {"Content-Type": "application/json; charset=utf-8"}
+    data = {
+        "searchWord": query,
+        "sort": "RECENT_SORT", 
+        "searchQuantity": MAX_ITEM
+    }
+
+    res = requests.post(url = 'https://search-api.joongna.com/v25/search/product', headers = headers,  data = json.dumps(data))
     raw_items = res.json()['data']['items']
     items = []
     for item in raw_items:
-        items.append(
+        price = int(item['price'])
+        if price != 0:
+            items.append(
                 (
-                    int(item['price']), 
+                    price, 
                     item['title'],
                     item['detailImgUrl'],
                     item['seq'] # 상세 페이지 : https://m.joongna.com/product-detail/28300332
                 )
             )
-    _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, 'joongna')
-    # return _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, result_str)
+    _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, 'joongna', result_dict)
+    
 
-if __name__ == '__main__':    
-    import time
-    import threading
+def gather_hellomarket(query, result_dict):
+    headers = {"User-Agent": "Mozilla/5.0"}
+    url = f"https://www.hellomarket.com/api/search/items?q={query}&limit={MAX_ITEM}"
+    response = requests.get(url, headers=headers)
+    from pprint import pprint
+    raw_items = response.json()['list']
+    items = []
+    for item in raw_items:
+        if not 'item' in item:
+            continue
+        item = item['item']
+        price = int(item['property']['price']['amount'])
+        if price != 0:
+            items.append(
+                (
+                    price, 
+                    item['title'],
+                    item['media']['imageUrl'],
+                    item['itemIdx'] # 상세 페이지 : https://www.hellomarket.com/item/172319904
+                )
+            )    
+
+    _filter_items(items, LOWER_CONSTANT, UPPER_CONSTANT, 'hellomarket', result_dict)
+        
+if __name__ == '__main__':   
+    import threading 
     threads = []
-    search_functions = [gather_bunjang, gather_joongna, gather_bunjang, gather_joongna]
-    args = ('맥북',)
+    result_dict = {}
+    search_functions = [gather_bunjang, gather_joongna, gather_hellomarket]
+    args = ('아이폰', result_dict)
     for fn in search_functions:
         th = threading.Thread(target = fn, args = args)
         threads.append(th)
-    start_time = time.time()
+
     for th in threads:
         th.start()
     for th in threads:
         th.join()
-    # print('threading', time.time() - start_time)
-    # start_time = time.time()
-    # gather_bunjang('맥북')
-    # gather_joongna('맥북')
-    # gather_bunjang('맥북')
-    # gather_joongna('맥북')
-    # print('sequential', time.time() - start_time)
+    gather_joongna('아이폰', result_dict)
+    print(result_dict)
     
