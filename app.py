@@ -106,6 +106,50 @@ def get_products():
     response = _generate_product_response(result_dict, user_favorites_pid)
     return jsonify(response)
 
+
+@app.route('/favorite', methods=['POST'])
+def add_favorite():
+    title = request.form['title']
+    image_url = request.form['image_url']
+    price = request.form['price']
+    pid = request.form['detail_url'].split('/')[-1]
+    user_id = request.form['user_id']
+    
+    document = {
+        'title': title,
+        'pid': pid,
+        'image_url': image_url,
+        'price': price,
+        'user_id': user_id
+    }
+    count = db.favorites.count_documents({
+        'pid': pid, 
+        'user_id': user_id
+    })
+    response = {'result':'fail'}
+    
+    if not count:    
+        result = db.favorites.insert_one(document)
+        if result.acknowledged:
+            response = {'result':'success'}
+    return jsonify(response)
+
+
+@app.route('/favorite', methods=['DELETE'])
+def remove_favorite():
+    pid = request.form['detail_url'].split('/')[-1]
+    user_id = request.form['user_id']
+
+    result = db.favorites.delete_one({
+            'pid': pid, 
+            'user_id': user_id
+        })
+    if result.deleted_count:
+        return {'result': 'success'}
+    return {'result': 'fail'}
+
+
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
+
 
