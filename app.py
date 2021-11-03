@@ -3,19 +3,31 @@ import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
 from utils import generate_product_response, generate_mypage_response, token_to_id
 from pymongo import MongoClient
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 import jwt, hashlib, datetime
 
 app = Flask(__name__)
 SECRET_KEY = 'black_cow'
 
 client = MongoClient('localhost', 27017)
+
 db = client.dbjungle_black_cow
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive is not None :
+        token_receive = bytes(token_receive[2:-1].encode('ascii'))
+
+        try:
+            payload= jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.users.find_one({'email': payload['ID']})
+            return render_template('index.html', user_info=user_info)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('/sign_in', message = "로그인 시간이 만료되었습니다."))
+    else :
+        return render_template('index.html')
 
 
 ### 회원 가입 기능 구현 ###
@@ -54,7 +66,7 @@ def check_up():
 ### 로그인 기능 구현 ###
 @app.route('/sign_in', methods=['GET'])
 def sign_in():
-    return render_template('signin.html')
+    return render_template('signin.html', title = '로그인')
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -67,6 +79,7 @@ def sign_in_user():
     if result is not None :
         payload = {
             'ID': email_receive,
+            'NAME': result['username'],
             'EXP': str(datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24))
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
@@ -74,6 +87,15 @@ def sign_in_user():
         return jsonify({'result': 'success', 'token': str(token)})
     else :
         return jsonify({'result': 'fail', 'message': 'E-mail/Password가 정확하지 않습니다.'})
+
+
+@app.route('/my_page', methods=['GET'])
+def my_page():
+    token_receive = request.cookies.get('mytoken')
+    if token_receive is not None :
+        return render_template('mypage.html', title = '마이페이지')
+    else :
+        return render_template('signin.html')
 
 
 # 상품 정보 가져오기 기능 구현 

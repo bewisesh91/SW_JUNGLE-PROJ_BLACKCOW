@@ -16,7 +16,7 @@ header {
 }
 
 .header_wrap {
-    width: 1104px;
+    max-width: 1104px;
     height: 100%;
     margin: 0 auto;
     display: flex;
@@ -27,7 +27,7 @@ header {
 }
 
 .wrap {
-    width: 800px;
+    max-width: 800px;
     margin: 20px auto;
     border-radius: 10px;
 }
@@ -125,5 +125,33 @@ main {
 }
 
 .no-search-result-image img { 
+    width: 100%;
+}
+
+.email_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign_wrap {
+    max-width: 500px;
+    margin: 20px auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.title-container {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.sign_wrap > div {
     width: 100%;
 }

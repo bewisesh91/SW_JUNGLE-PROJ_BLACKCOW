@@ -35,15 +35,6 @@ def generate_mypage_response(user_favorites):
     response['counts'] = len(items)
     response['items'] = items
     return response
-
-    # document = {
-    #     'title': title,
-    #     'pid': pid,
-    #     'image_url': image_url,
-    #     'price': price,
-    #     'user_id': user_id
-    # }
-    return response
     
 def generate_product_response(result_dict, user_favorites_pid):
     '''각 사이트별 API를 통해 얻은 결과를 response로 가공하는 함수 
