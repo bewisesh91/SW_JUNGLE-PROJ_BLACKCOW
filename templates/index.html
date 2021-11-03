@@ -53,12 +53,12 @@
                         $("#loader-container").hide();
                     },
                     success: function (response) {
-                        console.log(response)
                         if (response["result"] == "success") {
                             const bunjang = response?.data?.items?.bunjang;
                             const hellomarket = response?.data?.items?.hellomarket;
                             const joongna = response?.data?.items?.joongna;
-                            
+
+
                             let tempHtml = `
                                 <div class="columns is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd is-multiline">
                                     ${bunjang ? 
@@ -97,7 +97,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="goDetail('+ JSON.stringify(bunjang)+ ')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
@@ -137,7 +137,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="goDetail('${hellomarket}')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
@@ -177,7 +177,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="goDetail('${joongna}')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
