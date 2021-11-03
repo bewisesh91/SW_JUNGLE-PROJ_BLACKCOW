@@ -96,7 +96,7 @@ response = {
     - tkn: 유저 토큰 
 - response:
     - result: success 또는 fail
-    - counts 전체 상품 개수 
+    - counts: 전체 상품 개수 
     - items: 유저가 좋아요 누른 아이템 목록 
         - 상품 각각의 정보 
         ```javascript
@@ -108,3 +108,25 @@ response = {
                 "productPageUrl": "", // 상품 상세 페이지 url 
             } 
         ```
+        
+## 회원가입 
+- 초기 진입 페이지에서 회원가입 버튼 클릭시 회원가입 페이지로 이동 
+- url: /sign_up
+- method: POST
+- data: 
+    - username : 유저 이름
+    - password : 유저 패스워드
+    - email : 유저 이메일
+- response: 
+    - result: success 또는 fail
+  
+## 로그인 
+- 초기 진입 페이지에서 로그인 버튼 클릭시 로그인 페이지로 이동 
+- url: /sign_in
+- method: POST
+- data: 
+    - email : 유저 이메일
+    - password : 유저 패스워드
+- response: 
+    - result: success 또는 fail
+    - token: 유저 토큰
