@@ -1,6 +1,7 @@
+import json
 import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
-from utils import generate_product_response, token_to_id
+from utils import process_product_info, token_to_id, generate_crawling_response
 from pymongo import MongoClient
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import jwt, hashlib, datetime
@@ -12,6 +13,7 @@ client = MongoClient('localhost', 27017)
 
 db = client.dbjungle_black_cow
 
+cache = {}
 
 @app.route('/')
 def home():
@@ -95,12 +97,6 @@ def get_products():
     parameter_dict = request.args.to_dict()
     query = parameter_dict['q']
     token_receive = request.cookies.get('mytoken')
-    user_favorites_pid = set()
-    if token_receive is not None :
-        user_id = token_to_id(token_receive, SECRET_KEY)
-        user_favorites = list(db.favorites.find({"user_id": user_id}))    
-        for user_favorite in user_favorites:
-            user_favorites_pid.add(user_favorite['pid'])
     
     threads = []
     result_dict = {}
@@ -115,8 +111,36 @@ def get_products():
     for th in threads:
         th.join()
 
-    response = generate_product_response(result_dict, user_favorites_pid)
-    return jsonify(response)
+    user_favorites_pid = set()
+    if token_receive is not None :
+        user_id = token_to_id(token_receive, SECRET_KEY)
+        user_favorites = list(db.favorites.find({"user_id": user_id}))    
+        for user_favorite in user_favorites:
+            user_favorites_pid.add(user_favorite['pid'])
+    
+        processed = process_product_info(result_dict, user_favorites_pid)
+        products_res, details_res = generate_crawling_response(processed)
+        cache[user_id] = details_res
+    else:
+        processed = process_product_info(result_dict, user_favorites_pid)
+        products_res, details_res = generate_crawling_response(processed)
+        
+    return jsonify(products_res)
+
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    parameter_dict = request.args.to_dict()
+    company = parameter_dict['c']
+    token_receive = request.cookies.get('mytoken')
+    
+    if token_receive is not None :
+        user_id = token_to_id(token_receive, SECRET_KEY)
+        details_res = cache[user_id][company]
+    else:        
+        details_res = {'result':'fail'}
+    
+    return jsonify(details_res)
 
 
 @app.route('/favorite', methods=['POST'])

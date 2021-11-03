@@ -34,17 +34,19 @@ response = {
     - c: 유저가 선택한 상세페이지 회사 스트링 
 - response: 
     ```javascript
-    "items":[
-        {
-            "title": "",
-            "price": 0,
-            "imageUrl": "",
-            "productPageUrl": "",
-            "percentage": 0,
-            "isFavorite": true
-        }, 
-        ...
-    ]
+    response = {
+        "items":[
+            {
+                "title": "",
+                "price": 0,
+                "imageUrl": "",
+                "productPageUrl": "",
+                "percentage": 0,
+                "isFavorite": true
+            }, 
+            ...
+        ]
+    }
     ```
 
 ### 즐겨찾기 추가 
