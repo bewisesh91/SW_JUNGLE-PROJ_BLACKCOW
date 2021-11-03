@@ -1,6 +1,6 @@
 import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
-from utils import generate_product_response, generate_mypage_response, token_to_id
+from utils import generate_product_response, token_to_id
 from pymongo import MongoClient
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import jwt, hashlib, datetime
@@ -73,6 +73,7 @@ def sign_in_user():
     email_receive = request.form['email_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    print(password_hash)
     result = db.users.find_one({'email': email_receive, 'password': password_hash})
     
     if result is not None :
@@ -86,15 +87,6 @@ def sign_in_user():
         return jsonify({'result': 'success', 'token': str(token)})
     else :
         return jsonify({'result': 'fail', 'message': 'E-mail/Password가 정확하지 않습니다.'})
-
-
-@app.route('/my_page', methods=['GET'])
-def my_page():
-    token_receive = request.cookies.get('mytoken')
-    if token_receive is not None :
-        return render_template('mypage.html', title = '마이페이지')
-    else :
-        return render_template('signin.html')
 
 
 # 상품 정보 가져오기 기능 구현 
@@ -170,15 +162,19 @@ def remove_favorite():
         return {'result': 'success'}
     return {'result': 'fail'}
 
-@app.route('/mypage', methods=['GET'])
-def get_my_page():
-    parameter_dict = request.args.to_dict()
-    user_id = token_to_id(parameter_dict['tkn'], SECRET_KEY)
-    user_favorites = list(db.favorites.find({"user_id": user_id}))
-    response = generate_mypage_response(user_favorites)
-    return jsonify(response)
 
-
+@app.route('/my_page', methods=['GET'])
+def my_page():
+    # 이거 참고하세요 ^ㅡ^ 
+    # token_receive = request.cookies.get('mytoken')
+    token_receive = "b'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJJRCI6ImZyZWRrZWVtaGF1c0Bnb29nbGUuY29tIiwiTkFNRSI6Ilx1YWU0MFx1YzkwMFx1YzYwMSIsIkVYUCI6IjIwMjEtMTEtMDMgMTM6NDM6MzEuODIxMDczIn0.Ug93nOXCdAvoiHhpG994cltlFih51LB2idi3qL9_QMs'"
+    if token_receive is not None :
+        user_id = token_to_id(token_receive, SECRET_KEY)
+        user_favorites = list(db.favorites.find({"user_id": user_id}))
+        print(user_favorites)
+        return render_template('mypage.html', user_favorites = user_favorites)
+    else :
+        return render_template('signin.html')
     
 
 if __name__ == '__main__':  

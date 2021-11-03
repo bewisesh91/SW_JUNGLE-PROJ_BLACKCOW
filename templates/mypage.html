@@ -35,6 +35,13 @@
             <main>
                 <p>
                     <span>{{title}}</span>
+                    <ul>
+                        {% for x in user_favorites %}
+                        <li> {{x}} </li>
+                        {% endfor %}
+                    </ul>
+
+
                 </p>
             </main>
         </div>

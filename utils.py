@@ -24,7 +24,7 @@ def token_to_id(token, secret_key):
 
 
 def generate_mypage_response(user_favorites):
-    '''유저 즐겨찾기 정보를 받아서 response로 변환하는 함수 
+    '''유저 즐겨찾기 정보를 받아서 response로 변환하는 함수(deprecated)
     Args: 
         user_favorites (list): 데이터베이스에서 가져온 유저 즐겨찾기 정보 리스트
 
