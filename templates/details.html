@@ -44,14 +44,13 @@
             loginData();
         });
 
+        
         function getData() {
                 $.ajax({
                     type: "GET",
                     url: `/details?c=${compamy[1]}`,
 
                     success: function(response) {
-
-                        console.log(response);
 
                         response?.items?.map((item) => {
                             platformItems.push(item);
@@ -71,7 +70,7 @@
                                 let tempHtml = `
                                     <li class="tile is-4 is-parent">
                                         <div class="tile is-child box">
-                                            <div class="image-height">
+                                            <div class="image-height cursorPointer" onclick="goItemLink('${productPageUrl}')">
                                                 <img class="list-image-fit" src="${imageUrl}" alt="${title}"/>
                                             </div>
                                             <div class="margin-top-add">
@@ -135,11 +134,8 @@
                 },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        if (confirm("즐겨찾기에 추가되었습니다. 마이페이지에서 확인해보세요.")) {
-                            window.location.replace(`${pathname}${search}`)
-                        } else {
-                            window.location.replace(`${pathname}${search}`)
-                        }
+                        alert('즐겨찾기가 추가되었습니다.');
+                        window.location.replace(`${pathname}${search}`)
                     }
                 }
             })
@@ -161,8 +157,7 @@
                         window.location.replace(`${pathname}${search}`);
                     }
                 }
-            }
-            )
+            })
         }
 
         function loginData() {
@@ -189,6 +184,10 @@
                 `
             } 
             $("#loginOrNot").append(temp_html);
+        }
+
+        function goItemLink(link) {
+            window.open(`${link}`, '_blank');
         }
 
         </script>
@@ -230,7 +229,7 @@
 
                 {% endif %}
                 <p class="title">
-                    <img src={{defaultImage}} />
+                    <img width="200px" src={{defaultImage}} alt={{platform}} />
                 </p>
                 <ul class="tile is-ancestor" id="platform-list" style="display: flex; flex-wrap: wrap;">
 
