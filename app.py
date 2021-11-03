@@ -79,7 +79,11 @@ def check_up():
 ### 로그인 기능 구현 ###
 @app.route('/sign_in', methods=['GET'])
 def sign_in():
-    return render_template('signin.html', title = '로그인')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive :
+        return render_template('index.html')
+    else :
+        return render_template('signin.html', title = '로그인')
 
 
 @app.route('/sign_in', methods=['POST'])
