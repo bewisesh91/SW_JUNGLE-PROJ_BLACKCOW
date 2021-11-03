@@ -20,7 +20,15 @@ def token_to_id(token, secret_key):
     payload= jwt.decode(token, secret_key, algorithms=['HS256'])
     return payload['ID']
 
+
 def generate_mypage_response(user_favorites):
+    '''유저 즐겨찾기 정보를 받아서 response로 변환하는 함수 
+    Args: 
+        user_favorites (list): 데이터베이스에서 가져온 유저 즐겨찾기 정보 리스트
+
+    Returns:
+        dict: 마이페이지 정보가 담긴 dictionary
+    '''
     response = {}
     items = []
     for item in user_favorites:
@@ -36,15 +44,7 @@ def generate_mypage_response(user_favorites):
     response['items'] = items
     return response
 
-    # document = {
-    #     'title': title,
-    #     'pid': pid,
-    #     'image_url': image_url,
-    #     'price': price,
-    #     'user_id': user_id
-    # }
-    return response
-    
+
 def generate_product_response(result_dict, user_favorites_pid):
     '''각 사이트별 API를 통해 얻은 결과를 response로 가공하는 함수 
     
