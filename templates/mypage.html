@@ -59,13 +59,13 @@
     <div class="wrap">
         <main>
             <p>
-                <h3>마이페이지</h3>
+                <h3 class="title">마이페이지</h3>
             </p>
             <ul class="tile is-ancestor" id="platform-list" style="display: flex; flex-wrap: wrap;">
                 {% for x in user_favorites %}
                     <li class="tile is-4 is-parent">
                         <div class="tile is-child box">
-                            <div class="image-height">
+                            <div class="image-height cursorPointer" onclick="goItemLink('${productPageUrl}')">
                                 <img class="list-image-fit" src={{x.image_url}} alt={{x.title}} />
                             </div>
                             <div class="margin-top-add">
