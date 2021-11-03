@@ -99,9 +99,9 @@ response = {
 ## 마이페이지 요청 
 - 마이페이지를 그리기 위한 정보 요청 
 - url: /mypage
-- method: POST
-- data: 
-    - user_token: 유저 토큰 
+- method: GET
+- querystring: 
+    - usertoken: 유저 토큰 
 - response:
     - result: success 또는 fail
     - counts 전체 상품 개수 

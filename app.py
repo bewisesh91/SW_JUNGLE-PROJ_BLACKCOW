@@ -148,9 +148,10 @@ def remove_favorite():
         return {'result': 'success'}
     return {'result': 'fail'}
 
-@app.route('/mypage', method=['POST'])
+@app.route('/mypage', methods=['GET'])
 def get_my_page():
-    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
+    parameter_dict = request.args.to_dict()
+    user_id = token_to_id(parameter_dict['usertoken'], SECRET_KEY)
     user_favorites = list(db.favorites.find({"user_id": user_id}))
     response = generate_mypage_response(user_favorites)
     return jsonify(response)
