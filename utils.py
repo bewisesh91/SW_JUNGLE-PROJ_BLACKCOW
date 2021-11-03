@@ -16,7 +16,16 @@ def token_to_id(token, secret_key):
 
 
 def generate_product_response(result_dict, user_favorites_pid):
-    print(user_favorites_pid)
+    '''각 사이트별 API를 통해 얻은 결과를 response로 가공하는 함수 
+    
+    Args: 
+        result_dict (dict): 각 사이트별 API를 통해 얻은 필터된 아이템들의 정보와 사이트별 평균가격이 담긴 dictionary
+        user_favorites_pid (set): 현재 유저가 좋아요를 누른 상품에 대한 pid 값이 담긴 set
+    
+    Returns: 
+        dict: 상품 정보 요청에 대한 리스폰스 정보가 담긴 dictionary
+    '''
+
     detail_base_url = {
         'bunjang': 'https://m.bunjang.co.kr/products/{{PID}}',
         'joongna': 'https://m.joongna.com/product-detail/{{PID}}',
@@ -96,4 +105,5 @@ def generate_product_response(result_dict, user_favorites_pid):
             response['items'][company]['percentage'] = (company_avg - total_average) / total_average * 100 
         else:
             response['items'][company]['percentage'] = 0
+            
     return response

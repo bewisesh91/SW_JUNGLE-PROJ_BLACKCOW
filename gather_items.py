@@ -6,6 +6,18 @@ LOWER_CONSTANT = 0.5
 UPPER_CONSTANT = 1.5
 
 def _filter_items(items, lower, upper, result_str, result_dict):
+    '''API를 통해 얻어온 상품 리스트들에서 outlier를 제거하고, 제거된 아이템들의 평균 가격을 구하여 result_dict에 넣어주는 함수.
+    
+    Args:
+        items (list): 상품 정보가 담긴 리스트 
+        lower (float): outlier를 제거하기 위해 median으로 부터 lowerbound를 만들기 위한 상수 
+        upper (float): outlier를 제거하기 위해 median으로 부터 upperbound를 만들기 위한 상수 
+        result_str (str): result_dict의 키값으로 쓰일 중고 플랫폼 스트링
+        result_dict (dict): 검색한 결과가 저장되는 dictionary
+    
+    Returns:
+        None
+    '''
     items = sorted(items)
     if len(items) == 0:
         median = 0
@@ -27,6 +39,15 @@ def _filter_items(items, lower, upper, result_str, result_dict):
 
 
 def gather_bunjang(query, result_dict):
+    '''번개장터로 부터 query에 대한 검색 결과를 얻어 오는 함수 
+    
+    Args:
+        - query (str): 유저가 검색한 쿼리 스트링
+        - result_dict (dict): 검색한 결과가 저장되는 dictionary
+    
+    Returns:
+        None
+    '''
     items = []
     max_idx = MAX_ITEM // 30
     for i in range(max_idx):
@@ -48,6 +69,16 @@ def gather_bunjang(query, result_dict):
     
         
 def gather_joongna(query, result_dict):
+    '''중고나라로부터 query에 대한 검색 결과를 얻어 오는 함수 
+    
+    Args:
+        - query (str): 유저가 검색한 쿼리 스트링
+        - result_dict (dict): 검색한 결과가 저장되는 dictionary
+    
+    Returns:
+        None
+    '''
+    
     headers = {"Content-Type": "application/json; charset=utf-8"}
     data = {
         "searchWord": query,
@@ -73,10 +104,20 @@ def gather_joongna(query, result_dict):
     
 
 def gather_hellomarket(query, result_dict):
+    '''헬로마켓으로부터 query에 대한 검색 결과를 얻어 오는 함수 
+    
+    Args:
+        - query (str): 유저가 검색한 쿼리 스트링
+        - result_dict (dict): 검색한 결과가 저장되는 dictionary
+    
+    Returns:
+        None
+    '''
+    
     headers = {"User-Agent": "Mozilla/5.0"}
     url = f"https://www.hellomarket.com/api/search/items?q={query}&limit={MAX_ITEM}"
     response = requests.get(url, headers=headers)
-    from pprint import pprint
+    
     raw_items = response.json()['list']
     items = []
     for item in raw_items:
