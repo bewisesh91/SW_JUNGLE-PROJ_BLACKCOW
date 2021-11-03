@@ -1,9 +1,11 @@
 import jwt
+
 detail_base_url = {
     'bunjang': 'https://m.bunjang.co.kr/products/{{PID}}',
     'joongna': 'https://m.joongna.com/product-detail/{{PID}}',
     'hellomarket': 'https://www.hellomarket.com/item/{{PID}}'
 }
+    
     
 def token_to_id(token, secret_key):
     '''유저 토큰과 비밀 키를 받아서 토큰을 아이디로 변환하는 함수 
@@ -43,7 +45,7 @@ def generate_mypage_response(user_favorites):
     response['counts'] = len(items)
     response['items'] = items
     return response
-
+    
 
 def generate_product_response(result_dict, user_favorites_pid):
     '''각 사이트별 API를 통해 얻은 결과를 response로 가공하는 함수 
