@@ -28,16 +28,7 @@
             if(!isToken) {
                 alert("로그인이 필요한 서비스입니다.");
             } else {
-                $.ajax({
-                    type: "GET",
-                    url: "/details",
-                    
-                    success: function (response) {
-                        if (response["result"] == "success") {
-                            
-                        }
-                    }
-                })
+                window.location.replace(`/detail_page?platform=${platform}`)
             }
         }
 
@@ -149,7 +140,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('hellomarket')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
@@ -189,7 +180,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('joongna')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
@@ -230,7 +221,7 @@
                         <p class="no-search-result-image">
                             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="no search icon" />
                         </p>
-                        <p>
+                        <p class="no-search-result-text">
                             <span>검색어를 입력해주세요.</span>
                         </p>
                     </div>

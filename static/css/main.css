@@ -121,7 +121,12 @@ main {
 
 .no-search-result-image { 
     width: 200px;
+    margin-bottom: 20px;
     /* height: 100px; */
+}
+
+.no-search-result-text  {
+    font-size: 18px;
 }
 
 .no-search-result-image img { 
@@ -197,7 +202,13 @@ main {
     width: 100%;
 }
 
-.item-container {}
+#list-init {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
 
 .loader {
     border: 3px solid #f3f3f3; /* Light grey */

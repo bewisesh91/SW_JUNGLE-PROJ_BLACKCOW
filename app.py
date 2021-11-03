@@ -92,7 +92,6 @@ def sign_in_user():
 @app.route('/products', methods=['GET'])
 def get_products():
     parameter_dict = request.args.to_dict()
-    print(parameter_dict,'--')
     query = parameter_dict['q']
     
     token_receive = request.cookies.get('mytoken')
@@ -176,7 +175,17 @@ def my_page():
         return render_template('mypage.html', user_favorites = user_favorites)
     else :
         return render_template('signin.html')
-    
+
+
+@app.route('/detail_page', methods=['GET'])
+def detail_page():
+    parameter_dict = request.args.to_dict()
+    platform = parameter_dict['platform']
+
+    print(platform)
+
+    return render_template('details.html', platform = platform)
+
 
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
