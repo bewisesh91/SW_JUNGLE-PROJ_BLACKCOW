@@ -135,8 +135,11 @@
                 },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert("즐겨찾기에 추가되었습니다. 마이페이지에서 확인해보세요.");
-                        window.location.href = '/my_page';
+                        if (confirm("즐겨찾기에 추가되었습니다. 마이페이지에서 확인해보세요.")) {
+                            window.location.replace(`${pathname}${search}`)
+                        } else {
+                            window.location.replace(`${pathname}${search}`)
+                        }
                     }
                 }
             })

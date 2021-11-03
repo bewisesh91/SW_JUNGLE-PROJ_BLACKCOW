@@ -154,9 +154,11 @@ def get_details():
         if user_id in cache:
             details_res = cache[user_id][company]
         else:
-            details_res = {'result':'fail'}
+            raise KeyError("Cannot find cached data")
+            # details_res = {'result':'fail'}
     else:        
-        details_res = {'result':'fail'}
+        raise KeyError("Cannot find token")
+        # details_res = {'result':'fail'}
     
     return jsonify(details_res)
 
@@ -171,7 +173,6 @@ def add_favorite():
     pid = request.form['detail_url'].split('/')[-1]
     token_receive = request.cookies.get('mytoken')
     user_id = token_to_id(token_receive, SECRET_KEY)
-    
     document = {
         'title': title,
         'pid': pid,
@@ -190,6 +191,11 @@ def add_favorite():
     if not count:    
         result = db.favorites.insert_one(document)
         if result.acknowledged:
+            items = cache[user_id][company]['items']
+            for item in items:
+                if item['productPageUrl'].split('/')[-1] == pid:
+                    item['isFavorite'] = True
+                    break
             response = {'result':'success'}
     return jsonify(response)
 
@@ -198,6 +204,7 @@ def add_favorite():
 @error_handler
 def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
+
     token_receive = request.cookies.get('mytoken')
     user_id = token_to_id(token_receive, SECRET_KEY)
     
@@ -205,9 +212,17 @@ def remove_favorite():
             'pid': pid, 
             'user_id': user_id
         })
+    
     if result.deleted_count:
-        return {'result': 'success'}
-    return {'result': 'fail'}
+        company = request.form['detail_url'].split('.')[1]
+        items = cache[user_id][company]['items']
+        for item in items:
+            if item['productPageUrl'].split('/')[-1] == pid:
+                item['isFavorite'] = False
+                break
+        
+        return jsonify({'result': 'success'})
+    return jsonify({'result': 'fail'})
 
 
 @app.route('/my_page', methods=['GET'])
