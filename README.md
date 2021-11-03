@@ -4,7 +4,6 @@
 - method: GET
 - params: 
     - q: 유저 검색어 정보 
-    - tkn: 유저 토큰
 - response:
 ```Javascript
 response = {
@@ -92,8 +91,6 @@ response = {
 - 마이페이지를 그리기 위한 정보 요청 
 - url: /mypage
 - method: GET
-- params: 
-    - tkn: 유저 토큰 
 - response:
     - result: success 또는 fail
     - counts: 전체 상품 개수 

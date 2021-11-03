@@ -94,13 +94,14 @@ def sign_in_user():
 def get_products():
     parameter_dict = request.args.to_dict()
     query = parameter_dict['q']
-    user_id = token_to_id(parameter_dict['tkn'], SECRET_KEY)
-    
-    user_favorites = db.favorites.find({"user_id": user_id})
+    token_receive = request.cookies.get('mytoken')
     user_favorites_pid = set()
-    for user_favorite in user_favorites:
-        user_favorites_pid.add(user_favorite['pid'])
-
+    if token_receive is not None :
+        user_id = token_to_id(token_receive, SECRET_KEY)
+        user_favorites = list(db.favorites.find({"user_id": user_id}))    
+        for user_favorite in user_favorites:
+            user_favorites_pid.add(user_favorite['pid'])
+    
     threads = []
     result_dict = {}
     search_functions = [gather_bunjang, gather_joongna, gather_hellomarket]
@@ -165,9 +166,7 @@ def remove_favorite():
 
 @app.route('/my_page', methods=['GET'])
 def my_page():
-    # 이거 참고하세요 ^ㅡ^ 
-    # token_receive = request.cookies.get('mytoken')
-    token_receive = "b'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJJRCI6ImZyZWRrZWVtaGF1c0Bnb29nbGUuY29tIiwiTkFNRSI6Ilx1YWU0MFx1YzkwMFx1YzYwMSIsIkVYUCI6IjIwMjEtMTEtMDMgMTM6NDM6MzEuODIxMDczIn0.Ug93nOXCdAvoiHhpG994cltlFih51LB2idi3qL9_QMs'"
+    token_receive = request.cookies.get('mytoken')
     if token_receive is not None :
         user_id = token_to_id(token_receive, SECRET_KEY)
         user_favorites = list(db.favorites.find({"user_id": user_id}))
