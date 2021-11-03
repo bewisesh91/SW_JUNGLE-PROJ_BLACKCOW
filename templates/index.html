@@ -10,7 +10,6 @@
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script src="numeral.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
             
@@ -24,11 +23,12 @@
         });
 
         function onDetail(platform) {
-            const isToken = $.cookie('mytoken');     
-            if(!isToken) {
+            const data = $.cookie('mytoken');     
+            if(!data) {
                 alert("로그인이 필요한 서비스입니다.");
+                window.location.replace(`/sign_in`)
             } else {
-                window.location.replace(`/detail_page?platform=${platform}`)
+                window.location.href = `/detail_page?platform=${platform}`;
             }
         }
 

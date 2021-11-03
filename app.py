@@ -206,8 +206,6 @@ def detail_page():
     parameter_dict = request.args.to_dict()
     platform = parameter_dict['platform']
 
-    print(platform)
-
     return render_template('details.html', platform = platform)
 
 

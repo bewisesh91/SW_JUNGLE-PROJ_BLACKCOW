@@ -58,12 +58,21 @@
     {% include './components/header/index.html' %}
     <div class="wrap">
         <main>
-            <div class="tile is-ancestor">
+            <p>
+                <h3>마이페이지</h3>
+            </p>
+            <ul class="tile is-ancestor" id="platform-list" style="display: flex; flex-wrap: wrap;">
                 {% for x in user_favorites %}
-                <div class="tile is-4 is-parent">
-                    <div class="tile is-child box">
-                        <img src={{x.image_url}} alt={{x.title}} />
-                        <p class="title">
+                    <li class="tile is-4 is-parent">
+                        <div class="tile is-child box">
+                            <div class="image-height">
+                                <img class="list-image-fit" src={{x.image_url}} alt={{x.title}} />
+                            </div>
+                            <div class="margin-top-add">
+                                <p>
+                                    <strong>{{ x.title }}</strong>
+                                </p>
+                            </div>
                             {% if x.company == 'bunjang' %}
                             {% set link = 'https://m.bunjang.co.kr/products/' + x.pid %}
                             {% set defaultImage =
@@ -76,24 +85,24 @@
 
                             {% elif x.company == 'hellomarket' %}
                             {% set link = 'https://www.hellomarket.com/item/' + x.pid %}
-                            {% set defaultImage = 'https://ccimage.hellomarket.com/web/2019/header/img_gnb_logo_x2.png'
-                            %}
+                            {% set defaultImage = 'https://ccimage.hellomarket.com/web/2019/header/img_gnb_logo_x2.png'%}
 
                             {% endif %}
-                            <a href={{ link }} target="_blank">{{ x.title }}</a>
-
-                        </p>
-                        <p>가격 {{x.price}}원</p>
-                        <img src={{ defaultImage }} alt={{ x.company }} />
-                        <button class="button" onclick="cancleLike('{{link}}')">즐겨찾기 취소</button>
-                    </div>
-                </div>
-
+                            <div class="margin-top-add">
+                                <div class="flex-row">
+                                    <p>가격</p>
+                                    <p>
+                                        <strong>{{x.price}}</strong>
+                                    </p>
+                                </div>
+                                <div onclick="cancleLike('{{link}}')" class="position-favorite">
+                                    <span>♥️</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 {% endfor %}
-            </div>
-
-
-            </p>
+            </ul>
         </main>
     </div>
     {% include './components/footer/index.j2' %}
