@@ -15,6 +15,16 @@ db = client.dbjungle_black_cow
 
 cache = {}
 
+def error_handler(func):
+    def decorated():
+        try:
+            return func()
+        except:
+            return render_template('404.html')
+    decorated.__name__ = func.__name__
+    return decorated
+
+
 @app.route('/')
 def home():
     token_receive = request.cookies.get('mytoken')
@@ -38,6 +48,7 @@ def sing_up():
 
 
 @app.route('/sign_up', methods=['POST'])
+@error_handler
 def sign_up_save():
     # 회원 가입 시 받을 정보 3가지 
     username_receive = request.form['username_give']
@@ -58,6 +69,7 @@ def sign_up_save():
 
 
 @app.route('/check_up', methods=['POST'])
+@error_handler
 def check_up():
     email_receive = request.form['email_give']
     duplicate = bool(db.users.find_one({'email': email_receive}))
@@ -71,11 +83,12 @@ def sign_in():
 
 
 @app.route('/sign_in', methods=['POST'])
+@error_handler
 def sign_in_user():
     email_receive = request.form['email_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    print(password_hash)
+    
     result = db.users.find_one({'email': email_receive, 'password': password_hash})
     
     if result is not None :
@@ -93,6 +106,7 @@ def sign_in_user():
 
 # 상품 정보 가져오기 기능 구현 
 @app.route('/products', methods=['GET'])
+@error_handler
 def get_products():
     parameter_dict = request.args.to_dict()
     query = parameter_dict['q']
@@ -129,6 +143,7 @@ def get_products():
 
 
 @app.route('/details', methods=['GET'])
+@error_handler
 def get_details():
     parameter_dict = request.args.to_dict()
     company = parameter_dict['c']
@@ -147,6 +162,7 @@ def get_details():
 
 
 @app.route('/favorite', methods=['POST'])
+@error_handler
 def add_favorite():
     title = request.form['title']
     image_url = request.form['image_url']
@@ -179,6 +195,7 @@ def add_favorite():
 
 
 @app.route('/favorite', methods=['DELETE'])
+@error_handler
 def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
     token_receive = request.cookies.get('mytoken')
