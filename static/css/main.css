@@ -265,7 +265,9 @@ main {
 }
 
 .title {
-    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 50px;
     margin-bottom: 10px;
 }
 
