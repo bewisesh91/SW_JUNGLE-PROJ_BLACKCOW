@@ -152,8 +152,10 @@ def add_favorite():
 @app.route('/favorite', methods=['DELETE'])
 def remove_favorite():
     pid = request.form['detail_url'].split('/')[-1]
-    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
-
+    user_id = token_to_id("b'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJJRCI6ImZyZWRrZWVtaGF1c0Bnb29nbGUuY29tIiwiTkFNRSI6Ilx1YWU0MFx1YzkwMFx1YzYwMSIsIkVYUCI6IjIwMjEtMTEtMDMgMTM6NDM6MzEuODIxMDczIn0.Ug93nOXCdAvoiHhpG994cltlFih51LB2idi3qL9_QMs'", SECRET_KEY)
+    # user_id = token_to_id(request.form['user_token'], SECRET_KEY)
+    print(pid)
+    print(user_id)
     result = db.favorites.delete_one({
             'pid': pid, 
             'user_id': user_id
