@@ -77,10 +77,11 @@ def sign_in_user():
 
 
 # 상품 정보 가져오기 기능 구현 
-@app.route('/products', methods=['POST'])
+@app.route('/products', methods=['GET'])
 def get_products():
-    query = request.form['user_query']
-    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
+    parameter_dict = request.args.to_dict()
+    query = parameter_dict['q']
+    user_id = token_to_id(parameter_dict['tkn'], SECRET_KEY)
     
     user_favorites = db.favorites.find({"user_id": user_id})
     user_favorites_pid = set()
@@ -151,7 +152,7 @@ def remove_favorite():
 @app.route('/mypage', methods=['GET'])
 def get_my_page():
     parameter_dict = request.args.to_dict()
-    user_id = token_to_id(parameter_dict['usertoken'], SECRET_KEY)
+    user_id = token_to_id(parameter_dict['tkn'], SECRET_KEY)
     user_favorites = list(db.favorites.find({"user_id": user_id}))
     response = generate_mypage_response(user_favorites)
     return jsonify(response)
