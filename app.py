@@ -136,7 +136,10 @@ def get_details():
     
     if token_receive is not None :
         user_id = token_to_id(token_receive, SECRET_KEY)
-        details_res = cache[user_id][company]
+        if user_id in cache:
+            details_res = cache[user_id][company]
+        else:
+            details_res = {'result':'fail'}
     else:        
         details_res = {'result':'fail'}
     
