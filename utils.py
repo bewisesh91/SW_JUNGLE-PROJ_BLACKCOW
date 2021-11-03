@@ -1,4 +1,10 @@
 import jwt
+detail_base_url = {
+    'bunjang': 'https://m.bunjang.co.kr/products/{{PID}}',
+    'joongna': 'https://m.joongna.com/product-detail/{{PID}}',
+    'hellomarket': 'https://www.hellomarket.com/item/{{PID}}'
+}
+    
 def token_to_id(token, secret_key):
     '''유저 토큰과 비밀 키를 받아서 토큰을 아이디로 변환하는 함수 
     
@@ -14,7 +20,31 @@ def token_to_id(token, secret_key):
     payload= jwt.decode(token, secret_key, algorithms=['HS256'])
     return payload['ID']
 
+def generate_mypage_response(user_favorites):
+    response = {}
+    items = []
+    for item in user_favorites:
+        item_dict = {}
+        item_dict['title'] = item['title']
+        item_dict['price'] = item['price']
+        item_dict['imageUrl'] = item['image_url']
+        item_dict['company'] = item['company']
+        item_dict['productPageUrl'] = detail_base_url[item['company']].replace('{{PID}}', str(item['pid']))
+        items.append(item_dict)
+    response['result'] = 'success'
+    response['counts'] = len(items)
+    response['items'] = items
+    return response
 
+    # document = {
+    #     'title': title,
+    #     'pid': pid,
+    #     'image_url': image_url,
+    #     'price': price,
+    #     'user_id': user_id
+    # }
+    return response
+    
 def generate_product_response(result_dict, user_favorites_pid):
     '''각 사이트별 API를 통해 얻은 결과를 response로 가공하는 함수 
     
@@ -25,12 +55,6 @@ def generate_product_response(result_dict, user_favorites_pid):
     Returns: 
         dict: 상품 정보 요청에 대한 리스폰스 정보가 담긴 dictionary
     '''
-
-    detail_base_url = {
-        'bunjang': 'https://m.bunjang.co.kr/products/{{PID}}',
-        'joongna': 'https://m.joongna.com/product-detail/{{PID}}',
-        'hellomarket': 'https://www.hellomarket.com/item/{{PID}}'
-    }
     response = {
         'status': 200, 
         'total_average': 0,

@@ -1,6 +1,7 @@
+import json
 import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
-from utils import generate_product_response, token_to_id
+from utils import generate_product_response, generate_mypage_response, token_to_id
 from pymongo import MongoClient
 from flask import Flask, render_template, jsonify, request
 import jwt, hashlib, datetime
@@ -108,6 +109,7 @@ def add_favorite():
     title = request.form['title']
     image_url = request.form['image_url']
     price = request.form['price']
+    company = request.form['company']
     pid = request.form['detail_url'].split('/')[-1]
     user_id = token_to_id(request.form['user_token'], SECRET_KEY)
     
@@ -116,8 +118,10 @@ def add_favorite():
         'pid': pid,
         'image_url': image_url,
         'price': price,
-        'user_id': user_id
+        'user_id': user_id,
+        'company': company,
     }
+
     count = db.favorites.count_documents({
         'pid': pid, 
         'user_id': user_id
@@ -146,7 +150,13 @@ def remove_favorite():
 
 @app.route('/mypage', method=['POST'])
 def get_my_page():
-    pass
+    user_id = token_to_id(request.form['user_token'], SECRET_KEY)
+    user_favorites = list(db.favorites.find({"user_id": user_id}))
+    response = generate_mypage_response(user_favorites)
+    return jsonify(response)
+
+
+    
 
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)

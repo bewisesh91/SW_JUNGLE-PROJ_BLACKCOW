@@ -81,6 +81,8 @@ response = {
     - price: 상품 가격 
     - detail_url: 상품 상세페이지 url 
     - user_token: 유저 토큰
+    - company: 플랫폼 정보
+        - ⭐️ 'joongna', 'bunjang', 'hellomarket' 중 하나의 값
 - response:
     - result: success 또는 fail
 
@@ -102,16 +104,15 @@ response = {
     - user_token: 유저 토큰 
 - response:
     - result: success 또는 fail
+    - counts 전체 상품 개수 
     - items: 유저가 좋아요 누른 아이템 목록 
-        - counts 전체 상품 개수 
-        - items 상품 각각의 정보 
+        - 상품 각각의 정보 
         ```javascript
             {
                 "title": "", // 상품명
                 "price": 0, // 가격
                 "imageUrl": "", // 이미지 url
+                "company": "", // 플랫폼 정보 스트링
                 "productPageUrl": "", // 상품 상세 페이지 url 
-                "percentage": 0, // 평균 가격 대비 
-                "isFavorite": true // 즐겨찾기 여부 
             } 
         ```
