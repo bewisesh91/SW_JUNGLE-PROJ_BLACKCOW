@@ -10,6 +10,7 @@
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
             
     <title>Black Cow</title>
@@ -17,24 +18,179 @@
     <script>
         $(document).ready(function () {
             $("#search_input").val("");
-            $('#loader').hide();
-            // $("#list-container").empty();
+            $('#loader-container').hide();
+            $("#list-init").show();
         });
+
+        window
+
+        
+
+        function onDetail(platform) {
+            const data = $.cookie('mytoken');     
+            if(!data) {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.replace(`/sign_in`)
+            } else {
+                window.location.href = `/detail_page?platform=${platform}`;
+            }
+        }
 
         
         function searchEnter(event) {
-            let keyword = $("#search_input").val();
+            const keyword = $("#search_input").val();
+            const data = $.cookie('mytoken')
 
             if(event.keyCode === 13) {
                 if(keyword === "") {
                     alert("검색어를 입력해주세요.");
                     return;
                 }
-
-                $('#loader').show();
-                alert(keyword)
-                $('#loader').hide();
-
+                
+                $.ajax({
+                    type: "GET",
+                    url: `/products?q=${keyword}`,
+                    beforeSend: function() {
+                        $("#loader-container").show();
+                        $('#platform-list').empty();
+                    },
+                    complete: function() {
+                        $("#loader-container").hide();
+                        $("#list-init").hide();
+                    },
+                    success: function (response) {
+                            const bunjang = response?.bunjang;
+                            const hellomarket = response?.hellomarket;
+                            const joongna = response?.joongna;
+                            
+                            let tempHtml = `
+                                <div class="columns is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd is-multiline">
+                                    ${bunjang ? 
+                                        `
+                                            <div class="column is-half item-container">
+                                                <p class="platform-image-container">
+                                                    <img src="{{ url_for('static', filename='images/bungae.png') }}" />
+                                                </p>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        갯수
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(bunjang.counts).format('0,0')}개
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        평균 가격
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(bunjang.average).format('0,0')}원
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        전체 평균 대비
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(bunjang.percentage).format('0,0')}%
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('bunjang')">바로가기</button>
+                                            </div>
+                                        `
+                                    : ``}
+                                    ${hellomarket ?
+                                        `
+                                            <div class="column is-half item-container">
+                                                <p class="platform-image-container">
+                                                    <img src="{{ url_for('static', filename='images/hello.png') }}" />
+                                                </p>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        갯수
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(hellomarket.counts).format('0,0')}개
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        평균 가격
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(hellomarket.average).format('0,0')}원
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        전체 평균 대비
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(hellomarket.percentage).format('0,0')}%
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('hellomarket')">바로가기</button>
+                                            </div>
+                                        `
+                                    : ``}
+                                    ${joongna ?
+                                        `
+                                            <div class="column is-half item-container">
+                                                <p class="platform-image-container">
+                                                    <img src="{{ url_for('static', filename='images/joongna.png') }}" />
+                                                </p>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        갯수
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(joongna.counts).format('0,0')}개
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        평균 가격
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(joongna.average).format('0,0')}원
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>
+                                                        전체 평균 대비
+                                                    </p>
+                                                    <p>
+                                                        <strong>
+                                                            ${numeral(joongna.percentage).format('0,0')}%
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('joongna')">바로가기</button>
+                                            </div>
+                                        `
+                                    : ``}
+                                    
+                                </div>
+                            `
+                        $('#platform-list').append(tempHtml)
+                    }
+                })
             }
 
         }
@@ -59,15 +215,24 @@
             </div>
             <main>
                 <div id="list-container">
-                    <div>
-                        <p class="no-search-result-image">
-                            <img src="{{ url_for('static', filename='images/no_search_result_image.png') }}" alt="no search icon" />
+                    <div id="platform-list">
+                        
+                    </div>
+                    <div id="list-init">
+                        <p class="no-search-result-text">
+                            <span class="title">더 이상의 흑우는 없다.</span>
                         </p>
                     </div>
                 </div>
             </main>
-            <div id="loader">
-                12
+            <div id="loader-container">
+                <p>
+                    <span>중고 플랫폼을 크롤링 하는 중입니다.</span>
+                </p>
+                <p>
+                    <span>잠시만 기다려주세요.</span>
+                </p>
+                <p class="loader"></p>
             </div>
         </div>
     {% include './components/footer/index.j2' %}
