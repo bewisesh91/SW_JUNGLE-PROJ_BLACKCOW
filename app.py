@@ -92,7 +92,9 @@ def sign_in_user():
 @app.route('/products', methods=['GET'])
 def get_products():
     parameter_dict = request.args.to_dict()
+    print(parameter_dict,'--')
     query = parameter_dict['q']
+    
     token_receive = request.cookies.get('mytoken')
     user_favorites_pid = set()
     if token_receive is not None :

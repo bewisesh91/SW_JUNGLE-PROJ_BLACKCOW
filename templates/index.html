@@ -20,18 +20,31 @@
         $(document).ready(function () {
             $("#search_input").val("");
             $('#loader-container').hide();
-            // $("#list-container").empty();
+            $("#list-init").show();
         });
 
-        function goDetail(data) {
-            console.log(data);
+        function onDetail(platform) {
+            const isToken = $.cookie('mytoken');     
+            if(!isToken) {
+                alert("로그인이 필요한 서비스입니다.");
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: "/details",
+                    
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            
+                        }
+                    }
+                })
+            }
         }
 
         
         function searchEnter(event) {
             const keyword = $("#search_input").val();
             const data = $.cookie('mytoken')
-            $('#platform-list').empty();
 
             if(event.keyCode === 13) {
                 if(keyword === "") {
@@ -40,24 +53,23 @@
                 }
                 
                 $.ajax({
-                    type: "POST",
-                    url: "/products",
-                    data: { 
-                            user_query: keyword,
-                            user_token: data,
-                        },
+                    type: "GET",
+                    url: `/products?q=${keyword}`,
                     beforeSend: function() {
                         $("#loader-container").show();
+                        $('#platform-list').empty();
                     },
                     complete: function() {
                         $("#loader-container").hide();
+                        $("#list-init").hide();
                     },
                     success: function (response) {
-                        console.log(response)
-                        if (response["result"] == "success") {
-                            const bunjang = response?.data?.items?.bunjang;
-                            const hellomarket = response?.data?.items?.hellomarket;
-                            const joongna = response?.data?.items?.joongna;
+
+                            const bunjang = response?.items?.bunjang;
+                            const hellomarket = response?.items?.hellomarket;
+                            const joongna = response?.items?.joongna;
+
+                            console.log(bunjang)
                             
                             let tempHtml = `
                                 <div class="columns is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd is-multiline">
@@ -97,7 +109,7 @@
                                                         </strong>
                                                     </p>
                                                 </div>
-                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth">바로가기</button>
+                                                <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('bunjang')">바로가기</button>
                                             </div>
                                         `
                                     : ``}
@@ -184,8 +196,7 @@
                                     
                                 </div>
                             `
-                            $('#platform-list').append(tempHtml)
-                        }
+                        $('#platform-list').append(tempHtml)
                     }
                 })
             }
@@ -213,9 +224,15 @@
             <main>
                 <div id="list-container">
                     <div id="platform-list">
-                        <!-- <p class="no-search-result-image">
-                            <img src="{{ url_for('static', filename='images/no_search_result_image.png') }}" alt="no search icon" />
-                        </p> -->
+                        
+                    </div>
+                    <div id="list-init">
+                        <p class="no-search-result-image">
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="no search icon" />
+                        </p>
+                        <p>
+                            <span>검색어를 입력해주세요.</span>
+                        </p>
                     </div>
                 </div>
             </main>
