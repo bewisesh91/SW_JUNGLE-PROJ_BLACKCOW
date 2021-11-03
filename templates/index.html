@@ -22,6 +22,10 @@
             $("#list-init").show();
         });
 
+        window
+
+        
+
         function onDetail(platform) {
             const data = $.cookie('mytoken');     
             if(!data) {
@@ -215,11 +219,8 @@
                         
                     </div>
                     <div id="list-init">
-                        <p class="no-search-result-image">
-                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="no search icon" />
-                        </p>
                         <p class="no-search-result-text">
-                            <span>검색어를 입력해주세요.</span>
+                            <span class="title">더 이상의 흑우는 없다.</span>
                         </p>
                     </div>
                 </div>
