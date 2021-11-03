@@ -42,8 +42,16 @@
             getData();
             $("#loginOrNot").html("");
             loginData();
+
+            
         });
 
+        window.addEventListener( "pageshow", function ( event ) {
+            var historyTraversal = event.persisted ||  ( typeof window.performance != "undefined" && window.performance.navigation.type === 2 );
+            if ( historyTraversal ) {
+                window.location.reload();
+            }
+        });
         
         function getData() {
                 $.ajax({
@@ -134,8 +142,12 @@
                 },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert('즐겨찾기가 추가되었습니다.');
-                        window.location.replace(`${pathname}${search}`)
+                        if (confirm("즐겨찾기에 추가되었습니다. 마이페이지에서 확인해보세요.")) {
+                            window.location.href = '/my_page';
+                        } else {
+                            window.location.replace(`${pathname}${search}`)
+                        }
+                        
                     }
                 }
             })
@@ -143,13 +155,14 @@
 
         function removeFavorite(link) {
             let detail_url = link;
+            // let user_token = $.cookie('mytoken');
 
             $.ajax({
                 type: "DELETE",
                 url: "/favorite",
                 data: {
                     detail_url: detail_url,
-                    user_token: user_token
+                    // user_token: user_token
                 },
                 success: function (response) {
                     if (response["result"] == "success") {

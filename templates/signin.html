@@ -34,36 +34,36 @@
     
             // if(event.keyCode === 13) {
                 if (email == "") {
-                alert("E-mail을 입력해주세요.")
-                $("#input_email").focus()
-                return;
-            } 
+                    alert("E-mail을 입력해주세요.")
+                    $("#input_email").focus()
+                    return;
+                } 
 
-            if (password == "") {
-                alert("Password를 입력해주세요.")
-                $("#input_password").focus();
-                return;
-            } 
+                if (password == "") {
+                    alert("Password를 입력해주세요.")
+                    $("#input_password").focus();
+                    return;
+                } 
 
-            $.ajax({
-                type: "POST",
-                url: "/sign_in",
-                data: { 
-                        email_give: email,
-                        password_give: password, 
-                    },
-                success: function (response) {
-                    if (response["result"] == "success") {
-                        alert('"더이상의 흑우는 없다." 블랙카우에 방문해주셔서 감사합니다.')
-                        $.cookie('mytoken', response['token'], {path: '/'});
-                        window.location.replace('/');
-                    } else {
-                        alert(response['message'])
+                $.ajax({
+                    type: "POST",
+                    url: "/sign_in",
+                    data: { 
+                            email_give: email,
+                            password_give: password, 
+                        },
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert('"더이상의 흑우는 없다." 블랙카우에 방문해주셔서 감사합니다.')
+                            $.cookie('mytoken', response['token'], {path: '/'});
+                            window.location.replace('/');
+                        } else {
+                            alert(response['message'])
+                        }
                     }
-                }
-            })
-            }
-        // }
+                })
+            // }
+        }
         
     </script>
 
