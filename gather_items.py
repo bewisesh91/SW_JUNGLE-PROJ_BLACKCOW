@@ -117,7 +117,6 @@ def gather_hellomarket(query, result_dict):
     headers = {"User-Agent": "Mozilla/5.0"}
     url = f"https://www.hellomarket.com/api/search/items?q={query}&limit={MAX_ITEM}"
     response = requests.get(url, headers=headers)
-    
     raw_items = response.json()['list']
     items = []
     for item in raw_items:

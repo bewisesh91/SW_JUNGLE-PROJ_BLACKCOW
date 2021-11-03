@@ -153,7 +153,7 @@ def process_product_info(result_dict, user_favorites_pid):
                     'imageUrl': '',
                     'productPageUrl': '',
                     'percentage': 0
-                }]
+                }],
             },
             'joongna':{
                 'average':0,

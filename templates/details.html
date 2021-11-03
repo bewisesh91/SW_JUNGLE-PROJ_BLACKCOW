@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <!-- Bulma -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous">
+        </script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+
+    <title> 블랙카우 | {{platform}} </title>
+
+    <script>
+        const result = window.location.search.substr(1);
+        const {pathname, search} = window.location;
+        const compamy = result.split('=');
+
+        const platformItems = [];
+
+        $(document).ready(function () {
+            getData();
+            $("#loginOrNot").html("");
+            loginData();
+        });
+
+        function getData() {
+                $.ajax({
+                    type: "GET",
+                    url: `/details?c=${compamy[1]}`,
+
+                    success: function(response) {
+
+                        console.log(response);
+
+                        response?.items?.map((item) => {
+                            platformItems.push(item);
+                        })
+
+                        if(platformItems?.length > 0) {
+
+                            for (let i = 0; i < platformItems?.length; i++) {
+                                const obj = platformItems[i];
+                                const title = obj['title'];
+                                const price = obj['price'];
+                                const percentage = obj['percentage'];
+                                const imageUrl = obj['imageUrl'];
+                                const productPageUrl = obj['productPageUrl'];
+                                const favorite = obj['isFavorite'];
+
+                                let tempHtml = `
+                                    <li class="tile is-4 is-parent">
+                                        <div class="tile is-child box">
+                                            <div class="image-height">
+                                                <img class="list-image-fit" src="${imageUrl}" alt="${title}"/>
+                                            </div>
+                                            <div class="margin-top-add">
+                                                <p>
+                                                    <strong>${title.slice(0, 14) + "..."}</strong>
+                                                </p>
+                                            </div>
+                                            <div class="margin-top-add">
+                                                <div class="flex-row">
+                                                    <p>가격</p>
+                                                    <p>
+                                                        <strong>${numeral(price).format('0,0')}원</strong>
+                                                    </p>
+                                                </div>
+                                                <div class="flex-row">
+                                                    <p>평균 가격 대비</p>
+                                                    <p>
+                                                        ${percentage > 0 ? `
+                                                            <strong style="color: red">+${numeral(percentage).format('0,0')}%</strong>
+                                                        ` : `
+                                                            <strong style="color: #42BBFF">${numeral(percentage).format('0,0')}%</strong>
+                                                        `}
+                                                    </p>
+                                                </div>
+                                                ${favorite ? `
+                                                    <div class="position-favorite" onclick="removeFavorite('${productPageUrl}')">
+                                                        <span>♥️</span>
+                                                    </div>
+                                                ` : `
+                                                    <div class="position-favorite" onclick="addFavorite('${title}', '${imageUrl}', '${price}', '${compamy[1]}', '${productPageUrl}')">
+                                                        <span>♡</span>
+                                                    </div>
+                                                `}
+                                                
+                                            </div>
+                                        </div>
+                                    </li>
+                                `
+                                $('#platform-list').append(tempHtml)
+                            }
+
+                        } else {
+                            console.log('No')
+                        }
+                    }
+
+                    
+                })
+            }
+
+        function addFavorite(title, image, price, company, url) {
+            $.ajax({
+                type: "POST",
+                url: "/favorite",
+                data: {
+                    title,
+                    image_url: image,
+                    price,
+                    company,
+                    detail_url: url
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("즐겨찾기에 추가되었습니다. 마이페이지에서 확인해보세요.");
+                        window.location.href = '/my_page';
+                    }
+                }
+            })
+        }
+
+        function removeFavorite(link) {
+            let detail_url = link;
+
+            $.ajax({
+                type: "DELETE",
+                url: "/favorite",
+                data: {
+                    detail_url: detail_url,
+                    user_token: user_token
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("즐겨찾기가 취소 되었습니다.");
+                        window.location.replace(`${pathname}${search}`);
+                    }
+                }
+            }
+            )
+        }
+
+        function loginData() {
+            let temp_html = "" 
+            let data = $.cookie('mytoken')
+
+            if (data) {
+                temp_html = `
+                    <a id="signout" class="sign_btn signin_btn" onclick="removeToken()"">
+                        로그아웃
+                    </a>
+                    <a id="signup" class="sign_btn signup_btn" href="/my_page">
+                        마이페이지
+                    </a>
+                `
+            } else {
+                temp_html = `
+                    <a id="signin" class="sign_btn signin_btn" href="/sign_in">
+                        로그인
+                    </a>
+                    <a id="signup" class="sign_btn signup_btn" href="/sign_up">
+                        회원가입
+                    </a>
+                `
+            } 
+            $("#loginOrNot").append(temp_html);
+        }
+
+        </script>
+
+</head>
+
+<body>
+    <!-- {% include './components/header/index.html' %} -->
+        <header>
+            <div class="header_wrap">
+                <div class="header_logo_container">
+                    <a href="/">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="black cow logo" />
+                    </a>
+                    
+                </div>
+                <div id="loginOrNot" class="header_anchor_container">
+                    <a id="signin" class="sign_btn signin_btn" href="/sign_in">
+                        로그인
+                    </a>
+                    <a id="signup" class="sign_btn signup_btn" href="/sign_up">
+                        회원가입
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="wrap">
+            <main>
+                {% if platform == 'bunjang' %}
+                    {% set defaultImage =
+                    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzYiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAxMzYgNDAiPgogICAgPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBmaWxsPSIjRDgwQzE4Ij4KICAgICAgICAgICAgPHBhdGggZD0iTTIxLjc1MSAxNC44TDUuOTY3IDMxLjc1NmMtLjEwMi4xMS0uMjg2LjAyNS0uMjY3LS4xMjVsMS43Ni0xNC4zNjNILjE1NmMtLjEzNiAwLS4yMDctLjE2Mi0uMTE0LS4yNjJMMTUuODI2LjA1Yy4xMDMtLjExLjI4Ni0uMDI1LjI2OC4xMjVsLTEuNzYgMTQuMzYzaDcuMzAzYy4xMzYgMCAuMjA3LjE2Mi4xMTQuMjYyTTc5LjQgMi41NTVWMjkuNjVoLTQuMDNWMTYuMTMyaC0yLjZ2MTMuMDA0SDY4LjhWMi43MDVoMy45NzF2OS4zMjRoMi42VjIuNTU1aDQuMDN6TTk0LjcgMTguNDU4Yy43NTcgMCAxLjQ5My4wMDUgMi4yMS4wMTUuNzE0LjAxMiAxLjM0NC4wMzYgMS44OS4wNzUgMi4yNTcuMTM4IDQuMDA3LjY1IDUuMjQ2IDEuNTMzIDEuMjQuODgyIDEuODYgMi4yMDcgMS44NiAzLjk3M3MtLjYyIDMuMDg2LTEuODYgMy45NmMtMS4yNC44NzItMi45OSAxLjM4OC01LjI0NyAxLjU0OC0uNTI1LjAzOS0xLjE0NS4wNjMtMS44Ni4wNzMtLjcxNy4wMS0xLjQ1OC4wMTQtMi4yMjMuMDE0LS43NjcgMC0xLjUwOC0uMDA1LTIuMjI0LS4wMTQtLjcxNS0uMDEtMS4zMzUtLjAzNC0xLjg2LS4wNzMtMi4yNTgtLjE2LTQuMDA3LS42NzYtNS4yNDgtMS41NDgtMS4yNC0uODc0LTEuODYtMi4xOTQtMS44Ni0zLjk2cy42Mi0zLjA4NCAxLjg2LTMuOTU4YzEuMjQxLS44NzIgMi45OS0xLjM4OCA1LjI0OC0xLjU0OC41MjUtLjAyIDEuMTQ1LS4wMzkgMS44Ni0uMDYuNzE2LS4wMiAxLjQ1Mi0uMDMgMi4yMDgtLjAzek0xMzMgMi41NTVWMjkuNjVoLTQuMTIzVjE2LjM0M2gtNC4xMjN2LTMuOTIxaDQuMTIzVjIuNTU1SDEzM3ptLTk4LjE1NSAxNy42N3Y1LjE4NWgxNi44NzN2My42NUgzMC41MTN2LTguODM1aDQuMzMyem0zMi4xODctMTcuMDhjLS4yNDQgMi43MjgtLjY1NiA1LjI2OC0xLjIzNyA3LjYxOS0uNTggMi4zNS0xLjI2NyA0LjU0NS0yLjA2MSA2LjU4LS43OTUgMi4wMzktMS42NyAzLjkyNS0yLjYyNyA1LjY2Ny0uOTU4IDEuNzQtMS45MzQgMy4zNjMtMi45MzIgNC44NzFsLTMuNTEyLTIuMTdjLjk1Ni0xLjM2MSAxLjg1My0yLjgwMyAyLjY4OC00LjMxOS44MzQtMS41MTggMS41ODMtMy4wNzkgMi4yNDQtNC42OS42NjEtMS42MDcgMS4yMzItMy4yMzUgMS43MS00Ljg4NS40NzktMS42NDguODQtMy4yNzggMS4wODUtNC44ODZoLTYuOTYzVjMuMTQ0em01Ny4xNjEgMHYzLjczNGgtOS4zNDh2NS44NDFoOC42OTN2My42MTVoLTguNjkzdjcuMDc0bDEyLjI2NS0uNDh2My41NTNsLTE2LjQ5Mi44MTFWMy4xNDRoMTMuNTc1ek05NC43MTUgMjEuOTdjLS42ODYgMC0xLjM1Ni4wMS0yLjAxMi4wMjktLjY1NS4wMjItMS4yMzUuMDUtMS43NC4wOS0xLjAyNy4wOTktMS43NjguMzE3LTIuMjIyLjY1Ni0uNDU0LjMzNi0uNjguNzczLS42OCAxLjMwOCAwIC41MzguMjI2Ljk3My42OCAxLjMxLjQ1NC4zMzcgMS4xOTUuNTU1IDIuMjIyLjY1NC41MDUuMDQxIDEuMDg1LjA3IDEuNzQuMDkuNjU2LjAyIDEuMzI2LjAyOSAyLjAxMi4wMjkuNjg1IDAgMS4zNTUtLjAxIDIuMDExLS4wMjkuNjU1LS4wMiAxLjIzNC0uMDQ5IDEuNzM5LS4wOSAxLjAyOS0uMSAxLjc3LS4zMTcgMi4yMjQtLjY1NC40NTMtLjMzNy42OC0uNzcyLjY4LTEuMzEgMC0uNTM1LS4yMjctLjk3Mi0uNjgtMS4zMDgtLjQ1NC0uMzQtMS4xOTUtLjU1Ny0yLjIyNC0uNjU3LS41MDUtLjAzOC0xLjA4NC0uMDY3LTEuNzM5LS4wOS0uNjU2LS4wMTktMS4zMjYtLjAyOC0yLjAxMS0uMDI4ek01MS43MTggMi41NTV2MTkuNDM3aC00LjI1OXYtOS41OThoLTMuOTU4djUuODEzSDI4Ljc0NlYyLjg1Nmg0LjI1OXY0LjE1aDYuMjM4di00LjE1SDQzLjV2NS42MDNoMy45NThWMi41NTVoNC4yNTl6bTQ2LjYzNC41OXYzLjcyaC00Ljk0NGMtLjM2Ni42ODMtLjc3MyAxLjM4My0xLjIzMSAyLjEwNS0uMDc0LjExOC0uMTYuMjM0LS4yMzUuMzVsNy40ODUgNC44OTgtMi4zNTggMy4yNjItNy4yMzItNS4yMDVjLS4wMzcuMDQ4LS4wNy4wOTYtLjEwNy4xNDMtLjg5NSAxLjEzNy0xLjg0IDIuMjMyLTIuODM0IDMuMjgtLjk5NSAxLjA0Ny0xLjk4IDEuOTY2LTIuOTUzIDIuNzZsLTIuNzc1LTIuODA3Yy43NzYtLjYxMSAxLjU1MS0xLjMwNiAyLjMyNy0yLjA5Ljc3Ni0uNzgyIDEuNTI2LTEuNjA3IDIuMjUyLTIuNDcuNzI2LS44NjQgMS40MDItMS43NTggMi4wMy0yLjY4NC4zNDgtLjUxNi42NjUtMS4wMy45Ni0xLjU0Mkg4Mi42di0zLjcyaDE1Ljc1MnptNi40MTgtLjU5VjguMWgyLjkwM3YzLjk2aC0yLjkwM3Y2LjRoLTQuMTY1VjIuNTU0aDQuMTY1em0tNjUuNTI3IDguMDIzaC02LjIzOHYzLjk5N2g2LjIzOHYtMy45OTd6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAwMDAwMCwgNC4wMDAwMDApIi8+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4K'
+                    %}
+
+                {% elif platform == 'joongna' %}
+                    {% set defaultImage = 'https://img2.joongna.com/common/home/v2/logo/home/front_full.png' %}
+
+                {% elif platform == 'hellomarket' %}
+                    {% set defaultImage = 'https://ccimage.hellomarket.com/web/2019/header/img_gnb_logo_x2.png'%}
+
+                {% endif %}
+                <p class="title">
+                    <img src={{defaultImage}} />
+                </p>
+                <ul class="tile is-ancestor" id="platform-list" style="display: flex; flex-wrap: wrap;">
+
+                </ul>
+            </main>
+        </div>
+    {% include './components/footer/index.j2' %}
+
+</body>
+
+</html>

@@ -103,13 +103,13 @@ def sign_in_user():
     else :
         return jsonify({'result': 'fail', 'message': 'E-mail/Password가 정확하지 않습니다.'})
 
-
 # 상품 정보 가져오기 기능 구현 
 @app.route('/products', methods=['GET'])
 @error_handler
 def get_products():
     parameter_dict = request.args.to_dict()
     query = parameter_dict['q']
+    
     token_receive = request.cookies.get('mytoken')
     
     threads = []
@@ -219,7 +219,15 @@ def my_page():
         return render_template('mypage.html', user_favorites = user_favorites)
     else :
         return render_template('signin.html')
-    
+
+
+@app.route('/detail_page', methods=['GET'])
+def detail_page():
+    parameter_dict = request.args.to_dict()
+    platform = parameter_dict['platform']
+
+    return render_template('details.html', platform = platform)
+
 
 if __name__ == '__main__':  
     app.run('0.0.0.0',port=5000,debug=True)
