@@ -1,4 +1,4 @@
-## API
+## API Document
 ### 상품 관련 정보 얻어오기 
 - url: /products
 - method: GET
