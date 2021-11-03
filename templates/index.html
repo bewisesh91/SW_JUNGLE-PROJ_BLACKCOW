@@ -55,12 +55,9 @@
                         $("#list-init").hide();
                     },
                     success: function (response) {
-
-                            const bunjang = response?.items?.bunjang;
-                            const hellomarket = response?.items?.hellomarket;
-                            const joongna = response?.items?.joongna;
-
-                            console.log(bunjang)
+                            const bunjang = response?.bunjang;
+                            const hellomarket = response?.hellomarket;
+                            const joongna = response?.joongna;
                             
                             let tempHtml = `
                                 <div class="columns is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd is-multiline">
