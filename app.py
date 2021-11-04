@@ -235,7 +235,7 @@ def my_page():
     if token_receive is not None :
         user_id = token_to_id(token_receive, SECRET_KEY)
         user_favorites = list(db.favorites.find({"user_id": user_id}))
-        return render_template('mypage.html', user_favorites = user_favorites)
+        return render_template('mypage.html',user_id = user_id, user_favorites = user_favorites)
     else :
         return render_template('signin.html')
 

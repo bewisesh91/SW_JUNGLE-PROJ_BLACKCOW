@@ -58,9 +58,12 @@
     {% include './components/header/index.html' %}
     <div class="wrap">
         <main>
+            
             <p>
-                <h3 class="title">마이페이지</h3>
+                <h3 class="title3"> {{user_id}}님의 관심 상품 </h3>
             </p>
+            {% if user_favorites %}
+
             <ul class="tile is-ancestor" id="platform-list" style="display: flex; flex-wrap: wrap;">
                 {% for x in user_favorites %}
                     <li class="tile is-4 is-parent">
@@ -103,6 +106,11 @@
                     </li>
                 {% endfor %}
             </ul>
+            {% else %}
+            <div class="notification">
+               <p> 관심 상품 목록이 없습니다. </p>
+            </div>
+            {% endif %}
         </main>
     </div>
     {% include './components/footer/index.j2' %}

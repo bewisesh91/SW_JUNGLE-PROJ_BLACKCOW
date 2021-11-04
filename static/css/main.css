@@ -152,6 +152,7 @@ main {
 }
 
 .no-search-result-text  {
+    text-align: center;
     font-size: 18px;
 }
 
@@ -267,8 +268,18 @@ main {
 .title {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-    font-size: 50px;
-    margin-bottom: 10px;
+    font-size: 85px;
+    margin-bottom: 10px !important;
+}
+
+.title2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+}
+
+.title3 {
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 
 .cursorPointer {
@@ -288,4 +299,12 @@ main {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 500px;
 }
