@@ -1,7 +1,7 @@
 import json
 import threading
 from gather_items import gather_hellomarket, gather_bunjang, gather_joongna
-from utils import process_product_info, token_to_id, generate_crawling_response
+from utils import process_product_info, token_to_id, token_to_name, generate_crawling_response
 from pymongo import MongoClient
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import jwt, hashlib, datetime
@@ -10,7 +10,6 @@ app = Flask(__name__)
 SECRET_KEY = 'black_cow'
 
 # client = MongoClient('localhost', 27017)
-client = MongoClient('mongodb://black_cow:black_cow@3.35.238.66',27017)
 
 
 db = client.dbjungle_black_cow
@@ -236,8 +235,9 @@ def my_page():
     token_receive = request.cookies.get('mytoken')
     if token_receive is not None :
         user_id = token_to_id(token_receive, SECRET_KEY)
+        user_name = token_to_name(token_receive, SECRET_KEY)
         user_favorites = list(db.favorites.find({"user_id": user_id}))
-        return render_template('mypage.html',user_id = user_id, user_favorites = user_favorites)
+        return render_template('mypage.html', user_name = user_name, user_favorites = user_favorites)
     else :
         return render_template('signin.html')
 

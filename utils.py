@@ -22,50 +22,21 @@ def token_to_id(token, secret_key):
     payload= jwt.decode(token, secret_key, algorithms=['HS256'])
     return payload['ID']
 
-'''
-response = {
-        'result': 'success', 
-        'total_average': 0,
-        'items': {
-            'bunjang':{
-                'average':0,
-                'percentage':0,
-                'counts': 0,
-                'items':[{
-                    'title': '',
-                    'price': 0,
-                    'imageUrl': '',
-                    'productPageUrl': '',
-                    'percentage': 0
-                }]
-            },
-            'joongna':{
-                'average':0,
-                'percentage':0,
-                'counts': 0,
-                'items':[{
-                    'title': '',
-                    'price': 0,
-                    'imageUrl': '',
-                    'productPageUrl': '',
-                    'percentage': 0
-                }]
-            },
-            'hellomarket':{
-                'average':0,
-                'percentage':0,
-                'counts': 0,
-                'items':[{
-                    'title': '',
-                    'price': 0,
-                    'imageUrl': '',
-                    'productPageUrl': '',
-                    'percentage': 0
-                }]
-            },
-        }
-    }
-'''
+def token_to_name(token, secret_key):
+    '''유저 토큰과 비밀 키를 받아서 토큰을 이름으로 변환하는 함수 
+    
+    Args: 
+        token (str): 유저 토큰 정보 
+        secret_key (str): 비밀 키 값
+    
+    Returns: 
+        str: 유저 네임
+    '''
+
+    token = bytes(token[2:-1].encode('ascii'))
+    payload= jwt.decode(token, secret_key, algorithms=['HS256'])
+    return payload['NAME']
+
 def generate_crawling_response(processed_data):
     '''각 사이트별 API를 통해 얻어온 후 한차례 가공된 데이터를 가지고 상품 정보 페이지와 상세 페이지의 response 생성
     Args:
