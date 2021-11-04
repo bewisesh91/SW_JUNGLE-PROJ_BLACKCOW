@@ -2,7 +2,7 @@
 ## 기획 의도 
 - 커져가는 중고 시장, 다양한 중고 거래 서비스들의 등장 
 - **"흑우"** 를 피하기 위한 합리적인 중고가격 제시 플랫폼
----
+
 ## 기술 스택 
 ### Client
 - HTML + Jinja2 Template Engine
@@ -12,7 +12,7 @@
 - python3 + Flask
 ### Database
 - MongoDB
----
+
 ## requirements
 - certifi               2021.10.8
 - idna                  3.3
@@ -31,7 +31,7 @@
 - pymongo               3.12.1
 - toml                  0.10.2
 - Werkzeug              2.0.2
---- 
+ 
 ## 구현 상세 
 ### 와이어프레임 
 - use figma
@@ -60,7 +60,7 @@
 ### signature
 - How to accumulate user specific data? 
     - efficient data management
---- 
+ 
 ## API Document
 ### 상품 관련 정보 얻어오기 
 - url: /products
