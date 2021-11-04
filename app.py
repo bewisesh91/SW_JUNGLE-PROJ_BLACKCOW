@@ -9,7 +9,9 @@ import jwt, hashlib, datetime
 app = Flask(__name__)
 SECRET_KEY = 'black_cow'
 
-client = MongoClient('localhost', 27017)
+# client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://black_cow:black_cow@3.35.238.66',27017)
+
 
 db = client.dbjungle_black_cow
 
