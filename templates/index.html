@@ -62,8 +62,27 @@
                             const bunjang = response?.bunjang;
                             const hellomarket = response?.hellomarket;
                             const joongna = response?.joongna;
+
+                            const average = response?.total_average;
+                            
+                            console.log(response,'--')
                             
                             let tempHtml = `
+                                <div >
+                                    <p>
+                                        <strong>
+                                            ${keyword}
+                                        <strong>
+                                        <span>
+                                            의 전체 평균 가격
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong class="title3">
+                                            ${numeral(average).format('0,0')}원
+                                        </string>
+                                    </p>
+                                </div>
                                 <div class="columns is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd is-multiline">
                                     ${bunjang ? 
                                         `
@@ -96,9 +115,16 @@
                                                         전체 평균 대비
                                                     </p>
                                                     <p>
-                                                        <strong>
-                                                            ${numeral(bunjang.percentage).format('0,0')}%
-                                                        </strong>
+                                                        ${bunjang.percentage > 0 ? `
+                                                            <strong style="color: red">
+                                                                +${numeral(bunjang.percentage).format('0,0')}%
+                                                            </strong>    
+                                                        ` : `
+                                                            <strong style="color: #42BBFF">
+                                                                ${numeral(bunjang.percentage).format('0,0')}%
+                                                            </strong>
+                                                        `}
+                                                        
                                                     </p>
                                                 </div>
                                                 <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('bunjang')">바로가기</button>
@@ -136,9 +162,15 @@
                                                         전체 평균 대비
                                                     </p>
                                                     <p>
-                                                        <strong>
-                                                            ${numeral(hellomarket.percentage).format('0,0')}%
-                                                        </strong>
+                                                        ${hellomarket.percentage > 0 ? `
+                                                            <strong style="color: red">
+                                                                +${numeral(hellomarket.percentage).format('0,0')}%
+                                                            </strong>    
+                                                        ` : `
+                                                            <strong style="color: #42BBFF">
+                                                                ${numeral(hellomarket.percentage).format('0,0')}%
+                                                            </strong>
+                                                        `}
                                                     </p>
                                                 </div>
                                                 <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('hellomarket')">바로가기</button>
@@ -176,9 +208,15 @@
                                                         전체 평균 대비
                                                     </p>
                                                     <p>
-                                                        <strong>
-                                                            ${numeral(joongna.percentage).format('0,0')}%
-                                                        </strong>
+                                                        ${joongna.percentage > 0 ? `
+                                                            <strong style="color: red">
+                                                                +${numeral(joongna.percentage).format('0,0')}%
+                                                            </strong>    
+                                                        ` : `
+                                                            <strong style="color: #42BBFF">
+                                                                ${numeral(joongna.percentage).format('0,0')}%
+                                                            </strong>
+                                                        `}
                                                     </p>
                                                 </div>
                                                 <button style="margin-top: 10px" class="button is-info is-small is-fullwidth" onclick="onDetail('joongna')">바로가기</button>
